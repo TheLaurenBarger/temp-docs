@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Badger Quest : Tasmota: Serial Communication with Arduino</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Badger-Quest_229581.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home-Automation_655375.html">Home Automation</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Badger Quest : Tasmota: Serial Communication with Arduino
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+        
+            Created by <span class='author'> Lauren Barger</span>, last modified on Oct 09, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>In this guide we’re going to have a look at how to send commands from a Tasmota client to an Arduino or any other serial connection.</p><h1 id="Tasmota:SerialCommunicationwithArduino-TableofContents">Table of Contents</h1><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1668153921633 {padding: 0px;}
+div.rbtoc1668153921633 ul {list-style: none;margin-left: 0px;}
+div.rbtoc1668153921633 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1668153921633'>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1</span> <a href='#Tasmota:SerialCommunicationwithArduino-Circuit.'>Circuit.</a></li>
+<li><span class='TOCOutline'>2</span> <a href='#Tasmota:SerialCommunicationwithArduino-Tasmotaconfiguration.'>Tasmota configuration.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>2.1</span> <a href='#Tasmota:SerialCommunicationwithArduino-ConfigureTasmotamoduleparameters.'>Configure Tasmota module parameters.</a></li>
+<li><span class='TOCOutline'>2.2</span> <a href='#Tasmota:SerialCommunicationwithArduino-ConfigureTasmotalogging.'>Configure Tasmota logging.</a></li>
+<li><span class='TOCOutline'>2.3</span> <a href='#Tasmota:SerialCommunicationwithArduino-ConfigureTasmotabaudrate.'>Configure Tasmota baudrate.</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>3</span> <a href='#Tasmota:SerialCommunicationwithArduino-Arduinoscript.'>Arduino script.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>3.1</span> <a href='#Tasmota:SerialCommunicationwithArduino-Testing.'>Testing.</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>4</span> <a href='#Tasmota:SerialCommunicationwithArduino-Conclusion.'>Conclusion.</a></li>
+<li><span class='TOCOutline'>5</span> <a href='#Tasmota:SerialCommunicationwithArduino-References.'>References.</a></li>
+</ul>
+</div><h1 id="Tasmota:SerialCommunicationwithArduino-Circuit.">Circuit.</h1><p>In order to test our connection we’ll use the following circuit. </p><div class="table-wrap"><table data-layout="default" data-local-id="eb5d1276-2811-4546-800d-ee24d771f2cb" class="confluenceTable"><colgroup><col style="width: 340.0px;"/><col style="width: 340.0px;"/></colgroup><tbody><tr><th class="confluenceTh"><p><strong>ESP-01S</strong></p></th><th class="confluenceTh"><p><strong>Arduino</strong></p></th></tr><tr><td class="confluenceTd"><p>GND</p></td><td class="confluenceTd"><p>GND</p></td></tr><tr><td class="confluenceTd"><p>VCC</p></td><td class="confluenceTd"><p>3.3V</p></td></tr><tr><td class="confluenceTd"><p>RST</p></td><td class="confluenceTd"><p>RESET</p></td></tr><tr><td class="confluenceTd"><p>GPIO2</p></td><td class="confluenceTd"><p>Pin 2 (RX)</p></td></tr><tr><td class="confluenceTd"><p>RX</p></td><td class="confluenceTd"><p>Pin 3 (TX)</p></td></tr></tbody></table></div><p>Note that in this configuration we are not using the hardware TX or RX pins of the Arduino. This is because using them can interfere with the native arduino logging. Instead we will use software serial pins configured on pins 2 and 3. <a class="external-link" data-card-appearance="inline" href="https://github.com/arendst/Tasmota/issues/2081" rel="nofollow">https://github.com/arendst/Tasmota/issues/2081</a>  </p><p>The ESP-01S has hardware TX and RX pins, however using them tends to interfere with native logging processes from Tasmota. GPIO1 is used for logging messages and will always send start up logs, while GPIO0 is used for setting the ESP into flashing mode. Therefore, we will use the GPIO2 pin as a Serial TX pin and use the standard RX pin for incoming messages.</p><h1 id="Tasmota:SerialCommunicationwithArduino-Tasmotaconfiguration.">Tasmota configuration.</h1><p>Tasmota allows an easy and agile way of handling MQTT messages on ES2666 chips. </p><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>For details on setting up Tasmota or Tasmota MQTT, refer to the following:</p><p><a href="8290305.html" data-linked-resource-id="8290305" data-linked-resource-version="14" data-linked-resource-type="page">Tasmota: Setup and Initial Configuration.</a>  </p><p><a href="10846209.html" data-linked-resource-id="10846209" data-linked-resource-version="6" data-linked-resource-type="page">Tasmota: Configuring MQTT Integration</a> </p>
+</div></div><p>For the purposes of this article, I will be publishing to a topic <code>/misc/sitbit</code> which is listened to by an ESP-01S chip. I will publish messages to the MQTT broker via home assistant. In order to publish serial messages from Tasmota, we need to do a couple of things.</p><h2 id="Tasmota:SerialCommunicationwithArduino-ConfigureTasmotamoduleparameters.">Configure Tasmota module parameters.</h2><p>Since we will be using the GPIO2 and GPIO3 (RX) pins on the ESP-01S for forwarding and receiving MQTT messages, we need to configure those pin functions in the Tasmota configuration. Navigate to <strong>Configuration</strong> → <strong>Configure Module </strong>and set: </p><ul><li><p><strong>GPIO2</strong>: Serial TX</p></li><li><p><strong>GPIO3</strong>: Serial RX</p></li></ul><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/11763713/11796513.png" data-image-src="attachments/11763713/11796513.png" data-height="524" data-width="319" data-unresolved-comment-count="0" data-linked-resource-id="11796513" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221009-045742.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="11763713" data-linked-resource-container-version="2" data-media-id="1904dbd3-dfd4-48fb-bbd9-a969c27ddf46" data-media-type="file"></span><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>For details on the various ESP board pinouts, have a look at this: <a class="external-link" data-card-appearance="inline" href="https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/" rel="nofollow">https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/</a>  </p>
+</div></div><h2 id="Tasmota:SerialCommunicationwithArduino-ConfigureTasmotalogging.">Configure Tasmota logging.</h2><p>Tasmota by default will send logs via it’s serial pins. To disable this, set the log levels via <strong>Configuration </strong>→ <strong>Configure Logging</strong> to:</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/11763713/11796527.png" data-image-src="attachments/11763713/11796527.png" data-height="466" data-width="315" data-unresolved-comment-count="0" data-linked-resource-id="11796527" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221009-050127.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="11763713" data-linked-resource-container-version="2" data-media-id="dad1daaa-fe6e-4555-a2fd-bddb1f631001" data-media-type="file"></span><h2 id="Tasmota:SerialCommunicationwithArduino-ConfigureTasmotabaudrate.">Configure Tasmota baudrate.</h2><p>Tasmota by default communicates on 115200, however, Arduino typically uses 9600. We’ll drop the baudrate on Tasmota to match Arduino.</p><p>We can configure the Tasmota baudrate using using MQTT tasmota commands from the Serial Send group.</p><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>For more commands available on the Tasmota API, refer to the following: <a class="external-link" data-card-appearance="inline" href="https://tasmota.github.io/docs/Commands/" rel="nofollow">https://tasmota.github.io/docs/Commands/</a> </p>
+</div></div><p>The command to set the baud rate to 9600 on Tasmota is as follows:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">%topic%/cmnd/Baudrate
+/misc/sitbit/cmnd/Baudrate</pre>
+</div></div><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/11763713/11829249.png" data-image-src="attachments/11763713/11829249.png" data-height="274" data-width="560" data-unresolved-comment-count="0" data-linked-resource-id="11829249" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221008-193943.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="11763713" data-linked-resource-container-version="2" data-media-id="11b15447-edef-4460-a2ec-588ae6103369" data-media-type="file"></span><p><strong>Tasmota logs:</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">20:38:53.174 SER: Set to 8N1 9600 bit/s
+20:38:53.179 MQT: /misc/sitbit/stat/RESULT = {&quot;Baudrate&quot;:9600}</pre>
+</div></div><h1 id="Tasmota:SerialCommunicationwithArduino-Arduinoscript.">Arduino script.</h1><p>The script used for this integration is based on the following: </p><ul><li><p><a class="external-link" data-card-appearance="inline" href="https://docs.arduino.cc/tutorials/communication/SoftwareSerialExample" rel="nofollow">https://docs.arduino.cc/tutorials/communication/SoftwareSerialExample</a>  </p></li></ul><p>In this script we configure a software serial pinout on Arduino pins 2 and 3. We also set the communication baudrate to 9600 as this is the default Arduino comms rate.</p><p>The code itself listens to when a message has been received on pin 3 and:</p><ul><li><p>Publishes the message to the Arduino serial monitor.</p></li><li><p>Responds with a message back to the ESP chip on pin 2.</p></li></ul><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: cpp; gutter: false; theme: Confluence" data-theme="Confluence">#include &lt;SoftwareSerial.h&gt;
+
+const int rx = 2;
+const int tx = 3;
+
+SoftwareSerial mySerial(rx, tx);
+
+void setup() {
+  pinMode(rx, INPUT);
+  pinMode(tx, OUTPUT);
+  
+  Serial.begin(9600);
+  while (!Serial) {
+    ; // wait for serial port to connect
+  }
+
+  // set the data rate for the SoftwareSerial port
+  mySerial.begin(9600);
+}
+
+void loop() // run over and over
+{
+  if (mySerial.available()) {
+    String message = mySerial.readString();
+    Serial.print(&quot;recieved message: &#39;&quot; + message + &quot;&#39;&quot;);
+    mySerial.print(&quot;recieved message: &#39;&quot; + message + &quot;&#39;&quot;);
+    delay(100);
+  }
+}</pre>
+</div></div><h2 id="Tasmota:SerialCommunicationwithArduino-Testing.">Testing.</h2><p>In order to publish a message with the intent of passing that message on via configured serial pins, we will use the Tasmota command <code>SerialSend</code>. <a class="external-link" data-card-appearance="inline" href="https://github.com/arendst/Tasmota/issues/2182" rel="nofollow">https://github.com/arendst/Tasmota/issues/2182</a>  </p><p>The SerialSend command has different versions with different configurations. We will use <code>SerialSend2</code> which does not append new lines to the end of the transmitted message. </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">/misc/sitbit/cmnd/SerialSend2</pre>
+</div></div><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/11763713/11796543.png" data-image-src="attachments/11763713/11796543.png" data-height="267" data-width="556" data-unresolved-comment-count="0" data-linked-resource-id="11796543" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221009-052337.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="11763713" data-linked-resource-container-version="2" data-media-id="48ae1638-1d19-4d12-860e-eaabd9ace2b0" data-media-type="file"></span><p><strong>Arduino serial monitor logs</strong>:</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/11763713/11403376.png" data-image-src="attachments/11763713/11403376.png" data-height="335" data-width="544" data-unresolved-comment-count="0" data-linked-resource-id="11403376" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221009-052554.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="11763713" data-linked-resource-container-version="2" data-media-id="21bfadca-1d8d-423f-84e8-601aa3939c14" data-media-type="file"></span><p><strong>Tasmota logs:</strong></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">06:08:59.853 MQT: /misc/sitbit/stat/RESULT = {&quot;SerialSend&quot;:&quot;Done&quot;}
+06:09:01.036 MQT: /misc/sitbit/tele/RESULT = {&quot;SerialReceived&quot;:&quot;recieved message: &#39;hello&#39;&quot;}</pre>
+</div></div><h1 id="Tasmota:SerialCommunicationwithArduino-Conclusion.">Conclusion.</h1><p>In this article, we’ve covered how to configure serial communication between Tasmota and Arduino.</p><h1 id="Tasmota:SerialCommunicationwithArduino-References.">References.</h1><ol><li><p><a class="external-link" data-card-appearance="inline" href="https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/" rel="nofollow">https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://github.com/arendst/Tasmota/issues/2081" rel="nofollow">https://github.com/arendst/Tasmota/issues/2081</a> </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://docs.arduino.cc/tutorials/communication/SoftwareSerialExample" rel="nofollow">https://docs.arduino.cc/tutorials/communication/SoftwareSerialExample</a> </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://github.com/arendst/Tasmota/issues/2182" rel="nofollow">https://github.com/arendst/Tasmota/issues/2182</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://tasmota.github.io/docs/Commands/" rel="nofollow">https://tasmota.github.io/docs/Commands/</a> </p></li></ol><p><strong>Other:</strong></p><ol><li><p><a class="external-link" data-card-appearance="inline" href="https://github.com/arendst/Tasmota/discussions/11493" rel="nofollow">https://github.com/arendst/Tasmota/discussions/11493</a>  </p></li></ol>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763720.png">image-20220823-143720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763723.png">image-20220823-144050.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763726.png">image-20220823-151304.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763729.png">image-20220823-151507.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763732.png">image-20220824-055924.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763735.png">image-20220824-061439.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763738.png">image-20220824-061657.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763741.png">image-20220824-061720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763744.png">image-20220824-062557.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763747.png">image-20220824-062711.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763750.png">image-20220824-062900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763753.png">image-20220824-065144.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763756.png">image-20220824-065900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763759.png">Picture1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763762.png">image-20220824-071403.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763765.png">image-20220824-071639.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763768.png">image-20220824-072603.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763771.png">image-20220824-072719.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763774.png">image-20220824-073135.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763777.png">image-20220824-073153.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763780.png">image-20220824-073531.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763783.png">image-20220824-073600.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763786.png">image-20220824-073716.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763789.png">image-20220824-073749.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11763792.png">image-20220824-135836.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11829249.png">image-20221008-193943.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11436123.png">image-20221008-194216.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11436131.png">image-20221008-194354.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11796486.png">image-20221008-194546.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11436139.png">sitbit_bb.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11829264.png">image-20221009-045557.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11796513.png">image-20221009-045742.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11436151.png">image-20221009-045918.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11796519.png">image-20221009-045922.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11796527.png">image-20221009-050127.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11796543.png">image-20221009-052337.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/11763713/11403376.png">image-20221009-052554.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Nov 11, 2022 08:05</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

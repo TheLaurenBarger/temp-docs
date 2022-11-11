@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Badger Quest : Tasmota: Configuring MQTT Integration</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Badger-Quest_229581.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home-Automation_655375.html">Home Automation</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Badger Quest : Tasmota: Configuring MQTT Integration
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+        
+            Created by <span class='author'> Lauren Barger</span>, last modified on Oct 08, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <div class="contentLayout2">
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p>In this article, we’ll cover how to configure a Tasmota device for MQTT integration. </p><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>Before continuing, configuring MQTT on a Tasmota device will require a MQTT Broker: </p><p><a href="MQTT-Configuration_6946817.html" data-linked-resource-id="6946817" data-linked-resource-version="3" data-linked-resource-type="page">MQTT Configuration</a>  </p>
+</div></div><h2 id="Tasmota:ConfiguringMQTTIntegration-Relatedcontent.">Related content.</h2>    <ul class="relatedlabels-list">
+                    <li class="relatedlabel"><a class="label" rel="nofollow" href="/wiki/label/home-assistant">home-assistant</a></li>
+                    <li class="relatedlabel"><a class="label" rel="nofollow" href="/wiki/label/mqtt">mqtt</a></li>
+                    <li class="relatedlabel"><a class="label" rel="nofollow" href="/wiki/label/tasmota">tasmota</a></li>
+            </ul>
+<h1 id="Tasmota:ConfiguringMQTTIntegration-TableofContents">Table of Contents</h1><div class="error">Error rendering macro 'toc' : null</div><h1 id="Tasmota:ConfiguringMQTTIntegration-MQTTconfiguration.">MQTT configuration.</h1><p>In order to begin configuring MQTT, we first need to enable MQTT integration and then begin setting the integration parameters.</p><h2 id="Tasmota:ConfiguringMQTTIntegration-EnableMQTT.">Enable MQTT.</h2><p>Navigate to <strong>Configuration </strong>→ <strong>Configuration Other</strong> and set the <strong>MQTT Enable</strong> check box to true: </p></div>
+</div>
+</div>
+<div class="columnLayout two-equal" data-layout="two-equal">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<span class="confluence-embedded-file-wrapper image-center-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image image-center" width="564" loading="lazy" src="attachments/10846209/11436035.png?width=564" data-image-src="attachments/10846209/11436035.png" data-height="545" data-width="295" data-unresolved-comment-count="0" data-linked-resource-id="11436035" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221008-070917.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="10846209" data-linked-resource-container-version="6" data-media-id="24fb85bb-5041-4ef5-8778-032ad8fb1e2b" data-media-type="file"></span></div>
+</div>
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<span class="confluence-embedded-file-wrapper image-center-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image image-center" width="564" loading="lazy" src="attachments/10846209/11436041.jpeg?width=564" data-image-src="attachments/10846209/11436041.jpeg" data-height="831" data-width="524" data-unresolved-comment-count="0" data-linked-resource-id="11436041" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="5-20221008-071003.jpeg" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/jpeg" data-linked-resource-container-id="10846209" data-linked-resource-container-version="6" data-media-id="ea7c7dff-b17d-48b3-9556-d21fe582dd83" data-media-type="file"></span></div>
+</div>
+</div>
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p>Ensure that the MQTT Enable checkbox is set, and give your device a name that you can recognise.</p><h2 id="Tasmota:ConfiguringMQTTIntegration-ConfigureMQTTconnectionproperties.">Configure MQTT connection properties.</h2><p>After enabling MQTT, navigate to <strong>Configuration </strong>→ <strong>Configure MQTT</strong> to set the MQTT connection properties. </p><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>For details on how to configure a new user on your MQTT Broker, refer to the following: </p><p><a href="MQTT-Configuration_6946817.html" data-linked-resource-id="6946817" data-linked-resource-version="3" data-linked-resource-type="page">MQTT Configuration</a>  </p>
+</div></div><p>Enter in the following information: </p><ul><li><p><strong>Host</strong>: IP Address where your MQTT Broker is running</p></li><li><p><strong>Port</strong>: MQTT Broker port (default: 1883)</p></li><li><p><strong>Client</strong>: Device friendly name</p></li><li><p><strong>User</strong>: Username configured on MQTT Broker for your device</p></li><li><p><strong>Password</strong>: Password for MQTT user</p></li><li><p><strong>Topic</strong>: The topic that the device will listen to. </p></li></ul><h3 id="Tasmota:ConfiguringMQTTIntegration-MQTTtopicstructure.">MQTT topic structure. </h3><p>The MQTT topic naming convension will follow the following convension: </p><ol><li><p>Topics will be subdivided by forward slashes /</p></li><li><p>Topics will be organised from macro identifiers to micro from left to right:</p><ol><li><p>/bedroom/lamp/right/</p></li><li><p>/kitchen/light/</p></li><li><p>/laundrey/washingmachine/</p></li></ol></li><li><p>Topics will end with what is called a “prefix” in MQTT, but this prefix identifies the command that we’d like to execute on the device.</p><ol><li><p>cmd: issue commands</p></li><li><p>stat: report back configuration or status</p></li><li><p>tele: telemetry info</p></li></ol></li></ol><p>Following these rules, the topic name selected for our test device will be: <code>/misc/sitbit/%prefix%/</code></p></div>
+</div>
+</div>
+<div class="columnLayout two-equal" data-layout="two-equal">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<span class="confluence-embedded-file-wrapper image-center-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image image-center" width="564" loading="lazy" src="attachments/10846209/11468810.png?width=564" data-image-src="attachments/10846209/11468810.png" data-height="532" data-width="298" data-unresolved-comment-count="0" data-linked-resource-id="11468810" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221008-071317.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="10846209" data-linked-resource-container-version="6" data-media-id="82bb1c4d-2a89-41cc-8010-ad45bd5280b4" data-media-type="file"></span></div>
+</div>
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<span class="confluence-embedded-file-wrapper image-center-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image image-center" width="564" loading="lazy" src="attachments/10846209/11403302.png?width=564" data-image-src="attachments/10846209/11403302.png" data-height="474" data-width="317" data-unresolved-comment-count="0" data-linked-resource-id="11403302" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221008-074832.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="10846209" data-linked-resource-container-version="6" data-media-id="df7eb53a-526b-42a1-a296-771113622123" data-media-type="file"></span></div>
+</div>
+</div>
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h1 id="Tasmota:ConfiguringMQTTIntegration-TestMQTTconnection.">Test MQTT connection.</h1><p>In order to test the MQTT connection properties, we will require a means of publishing to the configured topic and will need to enable logging on the tasmota device in order to view incoming messages.</p><h2 id="Tasmota:ConfiguringMQTTIntegration-Configurelogging.">Configure logging.</h2><p>Navigate to <strong>Configuration </strong>→ <strong>Configure Logging</strong> to set the logging settings. In order to view incoming messages, we need to set <strong>Web log level</strong> to <strong>DEBUG</strong>.</p></div>
+</div>
+</div>
+<div class="columnLayout two-equal" data-layout="two-equal">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<span class="confluence-embedded-file-wrapper image-center-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image image-center" width="564" loading="lazy" src="attachments/10846209/11534353.png?width=564" data-image-src="attachments/10846209/11534353.png" data-height="521" data-width="293" data-unresolved-comment-count="0" data-linked-resource-id="11534353" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221008-073940.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="10846209" data-linked-resource-container-version="6" data-media-id="8874f66b-4e87-4e36-a8f3-2fe4040354ed" data-media-type="file"></span></div>
+</div>
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<span class="confluence-embedded-file-wrapper image-center-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image image-center" width="564" loading="lazy" src="attachments/10846209/11501597.png?width=564" data-image-src="attachments/10846209/11501597.png" data-height="475" data-width="318" data-unresolved-comment-count="0" data-linked-resource-id="11501597" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221008-074347.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="10846209" data-linked-resource-container-version="6" data-media-id="d459375a-56ce-4efc-a750-db24ecc9d1e9" data-media-type="file"></span></div>
+</div>
+</div>
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h2 id="Tasmota:ConfiguringMQTTIntegration-Publishingamessage.">Publishing a message.</h2><p>For this test we will publish messages to the MQTT topic via home assistant since it is convenient. </p><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>For other publishing methods, have a look at: </p><ul><li><p>Publishing via MQTT client: <a href="MQTT-Configuration_6946817.html" data-linked-resource-id="6946817" data-linked-resource-version="3" data-linked-resource-type="page">MQTT Configuration</a>  </p></li><li><p>Publishing via Tasmota Device Manager: <a href="11567105.html" data-linked-resource-id="11567105" data-linked-resource-version="1" data-linked-resource-type="page">Tasmota: Device Manager</a> </p></li><li><p>Publishing via Home Assistant: <a href="11632641.html" data-linked-resource-id="11632641" data-linked-resource-version="2" data-linked-resource-type="page">Home Assistant: MQTT Broker Integration</a> </p></li></ul>
+</div></div><p>For this test, the home assistant publishing settings look as follows: </p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/10846209/11599880.png" data-image-src="attachments/10846209/11599880.png" data-height="265" data-width="555" data-unresolved-comment-count="0" data-linked-resource-id="11599880" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221008-075349.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="10846209" data-linked-resource-container-version="6" data-media-id="ab9043ce-1919-4b41-9a48-2a720e73c1c2" data-media-type="file"></span><p>Once the message has been successfully published, you should be able to see the incoming message in the Console of the tasmota device: </p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/10846209/11534359.png" data-image-src="attachments/10846209/11534359.png" data-height="376" data-width="864" data-unresolved-comment-count="0" data-linked-resource-id="11534359" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221008-074254.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="10846209" data-linked-resource-container-version="6" data-media-id="7d6baa0f-aa18-4958-bc14-e683db21b08f" data-media-type="file"></span><h1 id="Tasmota:ConfiguringMQTTIntegration-Conclusion.">Conclusion.</h1><p>In this article, we’ve discussed how to configure MQTT integration on a Tasmota device and test the integration.</p><h1 id="Tasmota:ConfiguringMQTTIntegration-References.">References.</h1><ol><li><p><a href="MQTT-Configuration_6946817.html" data-linked-resource-id="6946817" data-linked-resource-version="3" data-linked-resource-type="page">MQTT Configuration</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://tasmota.github.io/docs/MQTT/" rel="nofollow">https://tasmota.github.io/docs/MQTT/</a>  </p></li></ol><p /></div>
+</div>
+</div>
+</div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846216.png">image-20220823-143720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846219.png">image-20220823-144050.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846222.png">image-20220823-151304.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846225.png">image-20220823-151507.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846228.png">image-20220824-055924.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846231.png">image-20220824-061439.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846234.png">image-20220824-061657.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846237.png">image-20220824-061720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846240.png">image-20220824-062557.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846243.png">image-20220824-062711.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846246.png">image-20220824-062900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846249.png">image-20220824-065144.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846252.png">image-20220824-065900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846255.png">Picture1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846258.png">image-20220824-071403.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846261.png">image-20220824-071639.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846264.png">image-20220824-072603.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846267.png">image-20220824-072719.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846270.png">image-20220824-073135.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846273.png">image-20220824-073153.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846276.png">image-20220824-073531.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846279.png">image-20220824-073600.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846282.png">image-20220824-073716.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846285.png">image-20220824-073749.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/10846288.png">image-20220824-135836.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/11436035.png">image-20221008-070917.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/11436041.jpeg">5-20221008-071003.jpeg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/11468810.png">image-20221008-071317.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/11501571.png">image-20221008-071416.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/11403290.png">image-20221008-073524.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/11436067.png">image-20221008-073639.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/11534353.png">image-20221008-073940.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/11534359.png">image-20221008-074254.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/11501597.png">image-20221008-074347.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/11403302.png">image-20221008-074832.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/11534387.png">image-20221008-075315.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/10846209/11599880.png">image-20221008-075349.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Nov 11, 2022 08:05</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

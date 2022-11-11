@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Badger Quest : Home Media Server, Part 2: Deluge</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Badger-Quest_229581.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home-Media-Server_1442078.html">Home Media Server</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Badger Quest : Home Media Server, Part 2: Deluge
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+        
+            Created by <span class='author'> Lauren Barger</span>, last modified on Oct 22, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <div class="contentLayout2">
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p>The first piece of the media server that we will configure is a torrent client. For this build, I’ll be using Deluge. There are many torrent client options available and each have their pros and cons, but we’re using Deluge for this build. Deluge is also going to allow us to set things like active downloading hours and download options specific to the source of the downloading request.</p><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>This section assumes the following has been completed: </p><p><a href="2031617.html" data-linked-resource-id="2031617" data-linked-resource-version="10" data-linked-resource-type="page">Home Server, Part 1: Hardware</a>  </p><p><a href="14024705.html" data-linked-resource-id="14024705" data-linked-resource-version="7" data-linked-resource-type="page">Home Server, Part 2: Ubuntu OS</a> </p><p><a href="1900552.html" data-linked-resource-id="1900552" data-linked-resource-version="8" data-linked-resource-type="page">Home Server, Part 3: Docker</a>  </p>
+</div></div><h1 id="HomeMediaServer,Part2:Deluge-TableofContents">Table of Contents</h1><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1668153939485 {padding: 0px;}
+div.rbtoc1668153939485 ul {list-style: none;margin-left: 0px;}
+div.rbtoc1668153939485 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1668153939485'>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1</span> <a href='#HomeMediaServer,Part2:Deluge-DelugeDockercontainer.'>Deluge Docker container.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1.1</span> <a href='#HomeMediaServer,Part2:Deluge-Delugefolderstructure.'>Deluge folder structure.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1.1.1</span> <a href='#HomeMediaServer,Part2:Deluge-Forexample:'>For example:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class='TOCOutline'>2</span> <a href='#HomeMediaServer,Part2:Deluge-ConfiguringDeluge.'>Configuring Deluge.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>2.1</span> <a href='#HomeMediaServer,Part2:Deluge-Configuredownloadsettings.'>Configure download settings.</a></li>
+<li><span class='TOCOutline'>2.2</span> <a href='#HomeMediaServer,Part2:Deluge-Configurenewpassword.'>Configure new password.</a></li>
+<li><span class='TOCOutline'>2.3</span> <a href='#HomeMediaServer,Part2:Deluge-Enableremoteconnections.'>Enable remote connections.</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>3</span> <a href='#HomeMediaServer,Part2:Deluge-ConfigureDelugeplugins.'>Configure Deluge plugins.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>3.1</span> <a href='#HomeMediaServer,Part2:Deluge-Enabletherequiredplugins.'>Enable the required plugins.</a></li>
+<li><span class='TOCOutline'>3.2</span> <a href='#HomeMediaServer,Part2:Deluge-Extractorconfiguration.'>Extractor configuration.</a></li>
+<li><span class='TOCOutline'>3.3</span> <a href='#HomeMediaServer,Part2:Deluge-Schedulerconfiguration.'>Scheduler configuration.</a></li>
+<li><span class='TOCOutline'>3.4</span> <a href='#HomeMediaServer,Part2:Deluge-Labelconfiguration.'>Label configuration.</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>4</span> <a href='#HomeMediaServer,Part2:Deluge-TestingDelugedownloads.'>Testing Deluge downloads.</a></li>
+<li><span class='TOCOutline'>5</span> <a href='#HomeMediaServer,Part2:Deluge-Conclusion.'>Conclusion.</a></li>
+<li><span class='TOCOutline'>6</span> <a href='#HomeMediaServer,Part2:Deluge-References.'>References.</a></li>
+</ul>
+</div><h1 id="HomeMediaServer,Part2:Deluge-DelugeDockercontainer.">Deluge Docker container.</h1><p>Add the following container details to your docker-compose.yaml <a class="external-link" data-card-appearance="inline" href="https://hub.docker.com/r/linuxserver/deluge" rel="nofollow">https://hub.docker.com/r/linuxserver/deluge</a>:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+      - DELUGE_LOGLEVEL=error #optional
+    volumes:
+      - /opt/deluge/config:/config
+      - /mnt/media/downloads:/downloads
+    ports:
+      - 8112:8112
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped</pre>
+</div></div><p>Then run the following to bring up the container:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">docker-compose up -d</pre>
+</div></div><p>Notice how we have mounted our external hard drive media mount against the downloads directory of deluge. </p><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>In this docker compose entry we have specified a volume for the container called downloads. This folder will store all our deluge torrents and downloads while they’re seeding. For this setup, I have created a directory on an external hdd called media which will store all my media and a sub folder to handle downloads.</p>
+</div></div><h2 id="HomeMediaServer,Part2:Deluge-Delugefolderstructure.">Deluge folder structure.</h2><p>I have am using the following folder structure for my media server setup: </p><span class="confluence-embedded-file-wrapper image-left-wrap-wrapper"><img class="confluence-embedded-image image-wrap-left" loading="lazy" src="attachments/16744449/17399854.png" data-image-src="attachments/16744449/17399854.png" data-height="353" data-width="162" data-unresolved-comment-count="0" data-linked-resource-id="17399854" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221022-150258.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="16744449" data-linked-resource-container-version="9" data-media-id="02b704e6-7bd8-46cf-8ca5-b3b9e08eae60" data-media-type="file"></span><p>The way that this will work is as follows: </p><ol><li><p>Sonarr/Radarr/Otharr will send Deluge a tag/label regarding who made the request. </p></li><li><p>Any new torrents will be added to the folder <code>/mnt/media/torrents</code></p></li><li><p>Deluge will pick up any new torrents from the folder and start downloading into the folder <code>/mnt/media/downloads/incomplete</code>.</p></li><li><p>When the download finishes, it will be moved to the completed downloads folder /mnt/media/downloads/complete and, if it was requested with a tag/label it will be placed in a sub folder with the same name as the label.</p></li><li><p>Once this is complete, the requesting app will move the completed download out of the directory with the same label as it and move it into it’s corresponding media folder, now available for viewing. </p></li></ol><h3 id="HomeMediaServer,Part2:Deluge-Forexample:">For example: </h3><ol><li><p>A new episode of Bleach releases. </p></li><li><p>Sonarr’s RSS feed alerts it of the new release and Sonarr retrieves a torrent link via Jackett (coming soon). </p></li><li><p>Sonarr will place the bleach torrent into the <code>/mnt/media/torrents</code> folder</p></li><li><p>Deluge will pick up the torrent and start downloading the files into the <code>/mnt/media/downloads/incomplete</code> folder</p></li><li><p>When the download is completed, Deluge will place the file into the <code>/mnt/media/downloads/complete/sonarr</code> folder</p></li><li><p>Sonarr will pick the file up out of the sonarr folder and move it into the Bleach folder in <code>/mnt/media/anime</code>. </p></li></ol><h1 id="HomeMediaServer,Part2:Deluge-ConfiguringDeluge.">Configuring Deluge.</h1><p>Navigate to the web interface for Deluge at port 8112: <a class="external-link" href="http://192.168.0.10:8112" rel="nofollow">http://192.168.0.10:8112</a>.</p><p>You will be asked to enter a username and password. The default settings are:</p><ul><li><p>user: admin</p></li><li><p>password: deluge</p></li></ul><h2 id="HomeMediaServer,Part2:Deluge-Configuredownloadsettings.">Configure download settings.</h2><p>Here we point Deluge to our desired incomplete and complete download folders mentioned above. Navigate to <strong>Preferences </strong>→ <strong>Downloads</strong>.</p><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>Remember, we mounted the directory <code>/mnt/media/downloads</code> to the <code>/downloads</code> directory of the Deluge container. Therefore we do not need to specify the <code>/mnt/media</code> prefix when configuring directories in Deluge.</p>
+</div></div><ul><li><p>Download to: <code>/downloads/incomplete</code></p></li><li><p>Move completed to: <code>/downloads/complete</code></p></li></ul><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/16744449/17334317.png" data-image-src="attachments/16744449/17334317.png" data-height="162" data-width="327" data-unresolved-comment-count="0" data-linked-resource-id="17334317" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221022-150733.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="16744449" data-linked-resource-container-version="9" data-media-id="c3c25d2c-9c16-4c94-a15e-a6df7d6bdb64" data-media-type="file"></span><h2 id="HomeMediaServer,Part2:Deluge-Configurenewpassword.">Configure new password.</h2><p>Navigate to <strong>Preferences </strong>→ <strong>Interface </strong>→ <strong>Password </strong>and change the password so that it is not the default.</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/16744449/17465345.png" data-image-src="attachments/16744449/17465345.png" data-height="109" data-width="256" data-unresolved-comment-count="0" data-linked-resource-id="17465345" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221022-143236.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="16744449" data-linked-resource-container-version="9" data-media-id="442e2802-585f-4d01-9973-ed58857979ac" data-media-type="file"></span><h2 id="HomeMediaServer,Part2:Deluge-Enableremoteconnections.">Enable remote connections. </h2><p>Navigate to <strong>Preferences</strong> → <strong>Daemon</strong> and note the daemon port. Ensure that <strong>Allow Remote Connections</strong> is enabled.</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/16744449/17465363.png" data-image-src="attachments/16744449/17465363.png" data-height="138" data-width="318" data-unresolved-comment-count="0" data-linked-resource-id="17465363" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221022-151130.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="16744449" data-linked-resource-container-version="9" data-media-id="c9af1736-a550-45b6-9965-ce441a39422e" data-media-type="file"></span><h1 id="HomeMediaServer,Part2:Deluge-ConfigureDelugeplugins.">Configure Deluge plugins.</h1><p>Deluge allows the integration of several plugins which will allow us to manage our downloads with far more fine tuned control. </p><span class="confluence-embedded-file-wrapper image-right-wrap-wrapper"><img class="confluence-embedded-image image-wrap-right" loading="lazy" src="attachments/16744449/17432597.png" data-image-src="attachments/16744449/17432597.png" data-height="280" data-width="169" data-unresolved-comment-count="0" data-linked-resource-id="17432597" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221022-151545.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="16744449" data-linked-resource-container-version="9" data-media-id="b016ec28-8899-4c23-8eec-17c666776147" data-media-type="file"></span><h2 id="HomeMediaServer,Part2:Deluge-Enabletherequiredplugins.">Enable the required plugins.</h2><p>Navigate to <strong>Preferences </strong>→ <strong>Plugins </strong>and enable the following: </p><ul><li><p><strong>Extractor</strong>: Will make sure that files are extracted out of any kind of zip or tar format before being moved to their completed folder.</p></li><li><p><strong>Label</strong>: Will give us fine control over how we handle downloads from different sources. (When Sonarr sends a download request, Deluge will label the download as “sonarr”)</p></li><li><p><strong>Scheduler</strong>: Will allow us to schedule allowed downloading and seeding hours throughout a week. </p></li></ul><p>Select <strong>Apply </strong>to enable the plugins.</p><h2 id="HomeMediaServer,Part2:Deluge-Extractorconfiguration.">Extractor configuration.</h2><p>Navigate to <strong>Preferences</strong> → <strong>Extractor</strong> to configure the download location of the extracted torrents. In our case, the <strong>Extract to </strong>destination is <code>/downloads/complete</code>.</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/16744449/17432605.png" data-image-src="attachments/16744449/17432605.png" data-height="92" data-width="366" data-unresolved-comment-count="0" data-linked-resource-id="17432605" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221022-151805.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="16744449" data-linked-resource-container-version="9" data-media-id="c6ee6f1d-119c-4683-8e85-1baf99d18ba2" data-media-type="file"></span><h2 id="HomeMediaServer,Part2:Deluge-Schedulerconfiguration.">Scheduler configuration.</h2><p>Navigate to <strong>Preferences </strong>→ <strong>Scheduler </strong>to set your download schedule on an hourly basis throughout a week. In my case, I’ve set downloading hours to any day between 10pm and 07am.</p><h2 id="HomeMediaServer,Part2:Deluge-Labelconfiguration.">Label configuration.</h2><p>To configure the Label plugin, we need to navigate to the <strong>Labels</strong> section in the <strong>Filters </strong>menu on the left hand side of the Deluge UI:</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/16744449/17465375.png" data-image-src="attachments/16744449/17465375.png" data-height="260" data-width="220" data-unresolved-comment-count="0" data-linked-resource-id="17465375" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221022-152131.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="16744449" data-linked-resource-container-version="9" data-media-id="efbd55c3-b50f-4aa6-8fa4-fdc75c3236ad" data-media-type="file"></span><p>Here you can add a label for each of the download requestors you may have on your system. You can add a label by right clicking the <strong>Labels</strong> heading here and selecting <strong>Add Label</strong>.</p><p>Once the label has been created, you can configure it’s download settings by right clicking on the created label and selecting <strong>Label Options</strong>.</p><p>Here you can apply individual download settings for a particular download client. Most importantly, this is where we can configure where we can configure the destination folder of the completed download. Select the <strong>Folders </strong>tab and enable <strong>Apply </strong>folder settings. Then enable <strong>Move </strong>completed <strong>to </strong>and enter the chosen destination folder. </p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/16744449/17399862.png" data-image-src="attachments/16744449/17399862.png" data-height="272" data-width="367" data-unresolved-comment-count="0" data-linked-resource-id="17399862" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221022-152511.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="16744449" data-linked-resource-container-version="9" data-media-id="0945b584-3f75-4bc9-a6ba-389635ff1ab3" data-media-type="file"></span><h1 id="HomeMediaServer,Part2:Deluge-TestingDelugedownloads.">Testing Deluge downloads.</h1><p>If you’d like a quick test to see if Deluge is configured correctly, select the + button in the top left and throw in a magnet link. The torrent should then start downloading.</p><h1 id="HomeMediaServer,Part2:Deluge-Conclusion.">Conclusion.</h1><p>And just like that, Deluge has been configured. It is now ready to start receiving torrent requests. Our next step is to configure our torrent index proxy service, Jackett. </p></div>
+</div>
+</div>
+<div class="columnLayout two-equal" data-layout="two-equal">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p>← <a href="16613377.html" data-linked-resource-id="16613377" data-linked-resource-version="5" data-linked-resource-type="page">Home Media Server, Part 1: System Overview</a> </p></div>
+</div>
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p style="text-align: right;"><a href="16809985.html" data-linked-resource-id="16809985" data-linked-resource-version="5" data-linked-resource-type="page">Home Media Server, Part 3: Jackett</a> <strong>→ </strong> </p></div>
+</div>
+</div>
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h1 id="HomeMediaServer,Part2:Deluge-References.">References.</h1><ol><li><p><a class="external-link" data-card-appearance="inline" href="https://deluge-torrent.org" rel="nofollow">https://deluge-torrent.org</a>   </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://hub.docker.com/r/linuxserver/deluge" rel="nofollow">https://hub.docker.com/r/linuxserver/deluge</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://zacholland.net/a-complete-guide-to-setting-up-a-plex-home-media-server-with-automated-requests-downloads/" rel="nofollow">https://zacholland.net/a-complete-guide-to-setting-up-a-plex-home-media-server-with-automated-requests-downloads/</a>  </p></li></ol></div>
+</div>
+</div>
+</div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744464.png">image-20220823-143720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744467.png">image-20220823-144050.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744470.png">image-20220823-151304.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744473.png">image-20220823-151507.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744476.png">image-20220824-055924.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744479.png">image-20220824-061439.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744482.png">image-20220824-061657.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744485.png">image-20220824-061720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744488.png">image-20220824-062557.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744491.png">image-20220824-062711.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744494.png">image-20220824-062900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744497.png">image-20220824-065144.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744500.png">image-20220824-065900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744503.png">Picture1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744506.png">image-20220824-071403.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744509.png">image-20220824-071639.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744512.png">image-20220824-072603.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744515.png">image-20220824-072719.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744518.png">image-20220824-073135.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744521.png">image-20220824-073153.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744524.png">image-20220824-073531.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744527.png">image-20220824-073600.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744530.png">image-20220824-073716.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744533.png">image-20220824-073749.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/16744536.png">image-20220824-135836.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17465345.png">image-20221022-143236.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17334293.png">image-20221022-145339.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17399846.png">image-20221022-145614.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17268778.png">image-20221022-145620.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17334299.png">image-20221022-145652.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17399854.png">image-20221022-150258.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17334317.png">image-20221022-150733.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17465363.png">image-20221022-151130.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17432597.png">image-20221022-151545.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17432605.png">image-20221022-151805.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17465375.png">image-20221022-152131.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17334329.png">image-20221022-152222.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744449/17399862.png">image-20221022-152511.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Nov 11, 2022 08:05</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

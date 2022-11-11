@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Badger Quest : Home Server, Part 6: Dynamic External IP Address</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Badger-Quest_229581.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home-Server_720897.html">Home Server</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Badger Quest : Home Server, Part 6: Dynamic External IP Address
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+        
+            Created by <span class='author'> Lauren Barger</span>, last modified on Oct 18, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <div class="contentLayout2">
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p>Now that our home server is accessible via our CloudFlare domain address, we need to address the issue of dynamic external IP addresses configured for our Router. </p><h1 id="HomeServer,Part6:DynamicExternalIPAddress-TableofContents">Table of Contents</h1><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1668153856917 {padding: 0px;}
+div.rbtoc1668153856917 ul {list-style: none;margin-left: 0px;}
+div.rbtoc1668153856917 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1668153856917'>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1</span> <a href='#HomeServer,Part6:DynamicExternalIPAddress-DynamicExternalIPaddresses.'>Dynamic External IP addresses.</a></li>
+<li><span class='TOCOutline'>2</span> <a href='#HomeServer,Part6:DynamicExternalIPAddress-DDClient.'>DD Client.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>2.1</span> <a href='#HomeServer,Part6:DynamicExternalIPAddress-DDClientcontainer.'>DD Client container.</a></li>
+<li><span class='TOCOutline'>2.2</span> <a href='#HomeServer,Part6:DynamicExternalIPAddress-DDClientconfiguration.'>DD Client configuration.</a></li>
+<li><span class='TOCOutline'>2.3</span> <a href='#HomeServer,Part6:DynamicExternalIPAddress-Testingupdates.'>Testing updates.</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>3</span> <a href='#HomeServer,Part6:DynamicExternalIPAddress-Conclusion.'>Conclusion.</a></li>
+<li><span class='TOCOutline'>4</span> <a href='#HomeServer,Part6:DynamicExternalIPAddress-References'>References</a></li>
+</ul>
+</div><h1 id="HomeServer,Part6:DynamicExternalIPAddress-DynamicExternalIPaddresses.">Dynamic External IP addresses.</h1><p>I am sadly not a large enough corporation to warrant my own static external address. My ISP will instead continuously rotate the external IP assigned to my router. Therefore, I need to maintain the IP address on my CloudFlare DNS entries accordingly.</p><h1 id="HomeServer,Part6:DynamicExternalIPAddress-DDClient.">DD Client.</h1><p>DD Client is a service meant for maintaining the DNS entries on your domain provider when your ISP updates your external IP address.</p><h2 id="HomeServer,Part6:DynamicExternalIPAddress-DDClientcontainer.">DD Client container.</h2><p>Add the following image to your docker-compose.yaml.</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">  ddclient:
+    image: lscr.io/linuxserver/ddclient:latest
+    container_name: ddclient
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+    volumes:
+      - /opt/ddclient:/config
+    restart: unless-stopped</pre>
+</div></div><p>Then run the following to bring up the DD Client container:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">docker-compose up -d</pre>
+</div></div><h2 id="HomeServer,Part6:DynamicExternalIPAddress-DDClientconfiguration.">DD Client configuration.</h2><p>The DD Client needs to be configured to update the external IP address of the CloudFlare DNS entries. In order to connect to CloudFlare and perform updates, we will need the following: </p><ul><li><p>domain name (eg. badger-quest.com)</p></li><li><p>email username</p></li><li><p>API global token</p></li></ul><p>To retrieve your CloudFlare global API token, navigate to My Profile → API Tokens. Then select View next to your Global API Key:</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/14942209/14778375.png" data-image-src="attachments/14942209/14778375.png" data-height="195" data-width="1019" data-unresolved-comment-count="0" data-linked-resource-id="14778375" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221018-115453.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="14942209" data-linked-resource-container-version="3" data-media-id="e037442d-104e-4b4b-b16c-9ee5b8e015d2" data-media-type="file"></span><p>Navigate to the config volume configured in the docker-compose entry, and open the <code>ddclient.conf</code> file with your favourite text editor (it's VS code).</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">## Check for updated IP address every minute on CloudFlare for the badger-quest.com domain.
+
+daemon=600
+syslog=yes
+verbose=no
+pid=/var/run/ddclient/ddclient.pid
+ssl=yes                             
+
+protocol=cloudflare
+use=web
+zone=badger-quest.com
+login=lauren.barger@outlook.com
+password=************************
+badger-quest.com</pre>
+</div></div><p>The domain configuration should be populated as follows: </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">## Template:
+protocol=cloudflare
+use=web
+zone=&lt;domain-name&gt;
+login=&lt;email-address&gt;
+password=&lt;global-api-token&gt;
+&lt;domain-name&gt;</pre>
+</div></div><p>Save the file for the changes to take affect. </p><h2 id="HomeServer,Part6:DynamicExternalIPAddress-Testingupdates.">Testing updates.</h2><p>If you had enabled verbose logging, you should see entries in the container logs like the following: </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">2022-10-18T11:42:52.286666768Z SUCCESS:  badger-quest.com -- Updated Successfully to ***.***.***.***</pre>
+</div></div><p>If you navigate to your domain DNS entries on CloudFlare, you should see that the IP address for the DNS entries has been updated to the value of your external IP address.</p><h1 id="HomeServer,Part6:DynamicExternalIPAddress-Conclusion.">Conclusion.</h1><p>My CloudFlare domain is now ensured to always be up to date with the latest dynamic IP assigned to my local router. </p></div>
+</div>
+</div>
+<div class="columnLayout two-equal" data-layout="two-equal">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p><strong>←  </strong><a href="327719.html" data-linked-resource-id="327719" data-linked-resource-version="17" data-linked-resource-type="page">Home Server, Part 5: Remote Access (Cloudflare and NGINX Proxy Manager)</a> </p></div>
+</div>
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p style="text-align: right;"><a href="4292609.html" data-linked-resource-id="4292609" data-linked-resource-version="9" data-linked-resource-type="page">Home Server, Part 7: Mikrotik Port Forwarding Secure Ports</a><strong> → </strong> </p></div>
+</div>
+</div>
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h1 id="HomeServer,Part6:DynamicExternalIPAddress-References">References</h1><ol><li><p><a class="external-link" data-card-appearance="inline" href="https://developers.cloudflare.com/dns/manage-dns-records/how-to/managing-dynamic-ip-addresses/" rel="nofollow">https://developers.cloudflare.com/dns/manage-dns-records/how-to/managing-dynamic-ip-addresses/</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://docs.linuxserver.io/images/docker-ddclient" rel="nofollow">https://docs.linuxserver.io/images/docker-ddclient</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://ddclient.net/usage.html" rel="nofollow">https://ddclient.net/usage.html</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://gist.github.com/benscabbia/a6b158974219f96ecb1e87b97890c5fe" rel="nofollow">https://gist.github.com/benscabbia/a6b158974219f96ecb1e87b97890c5fe</a>  </p></li></ol><p /></div>
+</div>
+</div>
+</div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/14942209/14778375.png">image-20221018-115453.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Nov 11, 2022 08:04</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

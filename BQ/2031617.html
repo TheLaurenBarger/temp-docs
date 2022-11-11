@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Badger Quest : Home Server, Part 1: Hardware</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Badger-Quest_229581.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home-Server_720897.html">Home Server</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Badger Quest : Home Server, Part 1: Hardware
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+        
+            Created by <span class='author'> Lauren Barger</span>, last modified on Oct 20, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <div class="contentLayout2">
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p>The value of a dedicated home server is unimaginable. My little NUC has paid off for itself in usefulness and sheer joy a hundred times over and I’ve had it for six months. This article is the first of many to chronicle the complete setup process for my home server, starting with, the hardware.</p><h1 id="HomeServer,Part1:Hardware-TableofContents">Table of Contents</h1><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1668153849424 {padding: 0px;}
+div.rbtoc1668153849424 ul {list-style: none;margin-left: 0px;}
+div.rbtoc1668153849424 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1668153849424'>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1</span> <a href='#HomeServer,Part1:Hardware-Hardware.'>Hardware.</a></li>
+<li><span class='TOCOutline'>2</span> <a href='#HomeServer,Part1:Hardware-NUCBIOSsettings.'>NUC BIOS settings.</a></li>
+<li><span class='TOCOutline'>3</span> <a href='#HomeServer,Part1:Hardware-Conclusion'>Conclusion</a></li>
+<li><span class='TOCOutline'>4</span> <a href='#HomeServer,Part1:Hardware-References'>References</a></li>
+</ul>
+</div><h1 id="HomeServer,Part1:Hardware-Hardware.">Hardware.</h1><p>I went with an Intel NUC for my home server setup. It’s more powerful than a Raspberry PI without being unreasonably expensive. The total components list added up to R4,352 when I bought it. I purchased the nuc itself, some RAM and an SSD for the setup. </p><ol><li><p><a class="external-link" href="https://www.wootware.co.za/intel-boxnuc7cjyhn2-nuc-nuc7cjyhn-intel-celeron-2-0ghz-dual-core-intel-uhd-600-graphics-2x-ddr4-so-dimm-mini-pc-ram-hdd-os-not-included.html" rel="nofollow">Intel NUC NUC7CJYHN Intel Celeron 2.0GHz Dual Core</a> - R3,474.00</p></li><li><p><a class="external-link" href="https://www.wootware.co.za/g-skill-f4-2400c16s-4grs-ripjaws-so-dimm-4gb-1x4gb-ddr4-2400mhz-cl16-1-2v-notebook-memory.html" rel="nofollow">G.Skill Ripjaws 4GB DDR4</a> - R329.00</p></li><li><p><a class="external-link" href="https://www.takealot.com/kingston-240gb-a400-sata3-2-5-ssd/PLID46618461" rel="nofollow">Kingston 240GB SSD</a> - R549</p></li><li><p>A minimum 4GB flash drive</p></li></ol><p>Putting everything together was fairly intuitive, especially since I’ve been putting monster PCs together. A little NUC wasn’t too much of a challenge.</p><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>The Intel notes on getting started with the NUC can be found here: <a class="external-link" href="https://www.intel.com/content/dam/support/us/en/documents/intel-nuc/NUC7xJYHN_UserGuide.pdf" rel="nofollow">Intel NUC User Guide</a> </p>
+</div></div><div class="confluence-information-macro confluence-information-macro-note"><span class="aui-icon aui-icon-small aui-iconfont-warning confluence-information-macro-icon"></span><div class="confluence-information-macro-body"><p>When I first got the NUC, I installed Ubuntu Desktop and had every intention of hooking up the NUC via HDMI to my TV. Ran into an issue with the sound drivers. This is apparently resolved with a BIOS update but I’ll admit… I’m far too lazy to fix this now. </p></div></div><h1 id="HomeServer,Part1:Hardware-NUCBIOSsettings.">NUC BIOS settings.</h1><p>There are a few settings we should configure in the NUC BIOS menu. </p><ol><li><p>Restart the NUC while holding F2. </p></li><li><p>If you want to force the NUC to open the BIOS menu, Press and hold the power button for three seconds. You will be presented with the power button menu. Select <strong>Enter BIOS Menu</strong>.</p></li></ol><p>At this point you’ll see a summary of your device’s properties. There is only one setting we want to enable in our BIOS menu, thanks to the general state of Eskom (this badger is South African). We want to ensure that the NUC will start up again after any power failure. </p><ol><li><p>Open the <strong>Power </strong>menu on the BIOS menu.</p></li><li><p>Locate the <strong>After Power Failure</strong> option and set it to <strong>Power On</strong>.</p></li></ol><h1 id="HomeServer,Part1:Hardware-Conclusion">Conclusion</h1><p>And that should be it! Hardware is ready to become a fully operational home server. As a next step, we’ll install the OS and start configuring the functionality of our home server.</p></div>
+</div>
+</div>
+<div class="columnLayout two-equal" data-layout="two-equal">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p /></div>
+</div>
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p style="text-align: right;"> <a href="14024705.html" data-linked-resource-id="14024705" data-linked-resource-version="7" data-linked-resource-type="page">Home Server, Part 2: Ubuntu OS</a> <strong>→ </strong> </p></div>
+</div>
+</div>
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h1 id="HomeServer,Part1:Hardware-References">References</h1><ol><li><p><a class="external-link" href="https://www.intel.com/content/dam/support/us/en/documents/intel-nuc/NUC7xJYHN_UserGuide.pdf" rel="nofollow">Intel NUC User Guide</a> </p></li></ol></div>
+</div>
+</div>
+</div>
+                    </div>
+
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Nov 11, 2022 08:04</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

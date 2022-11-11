@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Badger Quest : Home Media Server, Part 4: Sonarr, Radarr and any otharr</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Badger-Quest_229581.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home-Media-Server_1442078.html">Home Media Server</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Badger Quest : Home Media Server, Part 4: Sonarr, Radarr and any otharr
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+        
+            Created by <span class='author'> Lauren Barger</span>, last modified on Oct 22, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <div class="contentLayout2">
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p>The real magic and brains of the setup will sit in these media management apps. Sonarr and Radarr are both examples of a series of applications which handle the management of your media libraries. Each fork is specific to a paricular media type, for example, Sonarr is specific to tv shows and Radarr is specific to movies. There are many many instances of these. These apps will drive the process of monitoring RSS feeds to schedule downloads for media you’ve flagged when it becomes available. The apps will also handle the interaction with Jackett indexers to find media and Deluge for downloading the torrents.</p><p>There are a range of them, but the setup for each of them is extremely similar. For the purposes of this tutorial, we’ll focus on the installation of Sonarr. </p><h1 id="HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-TableofContents">Table of Contents</h1><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1668153953447 {padding: 0px;}
+div.rbtoc1668153953447 ul {list-style: none;margin-left: 0px;}
+div.rbtoc1668153953447 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1668153953447'>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1</span> <a href='#HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-SonarrDockercontainer.'>Sonarr Docker container.</a></li>
+<li><span class='TOCOutline'>2</span> <a href='#HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-ConfiguringSonarr.'>Configuring Sonarr.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>2.1</span> <a href='#HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Configuredownloadindexers.'>Configure download indexers.</a></li>
+<li><span class='TOCOutline'>2.2</span> <a href='#HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Configuredownloadclient.'>Configure download client.</a></li>
+<li><span class='TOCOutline'>2.3</span> <a href='#HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Configuredownloadprofiles.'>Configure download profiles.</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>3</span> <a href='#HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Addingmedia.'>Adding media.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>3.1</span> <a href='#HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Addingnewshows.'>Adding new shows.</a></li>
+<li><span class='TOCOutline'>3.2</span> <a href='#HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Importexistingmedia.'>Import existing media.</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>4</span> <a href='#HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Conclusion.'>Conclusion.</a></li>
+<li><span class='TOCOutline'>5</span> <a href='#HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-References.'>References.</a></li>
+</ul>
+</div><h1 id="HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-SonarrDockercontainer.">Sonarr Docker container.</h1><p>Add the following container details to your docker-compose.yaml <a class="external-link" data-card-appearance="inline" href="https://hub.docker.com/r/linuxserver/sonarr" rel="nofollow">https://hub.docker.com/r/linuxserver/sonarr</a>:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">  sonarr:
+    image: linuxserver/sonarr
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+      - UMASK_SET=022 #optional
+    volumes:
+      - /opt/sonarr/config:/config
+      - /mnt/media:/mnt/media
+    ports:
+      - 8989:8989
+    restart: unless-stopped</pre>
+</div></div><p>Then run the following to bring up the container:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">docker-compose up -d</pre>
+</div></div><p>Notice how we have mounted our external hard drive media mount against the media directory of sonarr. </p><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>Sonarr will be handling the downloads of two of my media libraries: anime and series. Therefore I’m going to create folders called anime and series in my <code>/mnt/media</code> directory for both libraries. </p>
+</div></div><h1 id="HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-ConfiguringSonarr.">Configuring Sonarr.</h1><p>Navigate to your server IP at port 8989: <a class="external-link" href="http://192.168.0.10:8989" rel="nofollow">http://192.168.0.10:8989</a> to reach the Sonarr web UI. Once you’re here, navigate to the <strong>Settings</strong> tab on the right. Select the Show Advanced option for more swag points and freedom.</p><h2 id="HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Configuredownloadindexers.">Configure download indexers.</h2><p>We need to connect Sonarr to Jackett as an indexer proxy. Navigate to <strong>Settings </strong>→ <strong>Indexers </strong>and select the + icon to add a new indexer. The idea here is that you will add an indexer to each of the Jackett indexers you configured in the previous step which support the media that the -arr app supports. In this case, Sonarr will be downloading anime and series. So I will link the following Jackett profiles: </p><ul><li><p>1337x</p></li><li><p>LimeTorrents</p></li><li><p>Nyaa</p></li></ul><p>The configuration should be the same for each of them. For each you will need to give them a name and then navigate to Jackett to locate the following information: </p><ul><li><p><strong>Jackett API Key</strong>: Shown in the top right of the Jackett web UI</p></li><li><p><strong>Jackett Indexer Torsnab Feed</strong>: Select the <strong>Copy Torznab Feed</strong> button for each indexer that you want to configure.</p></li></ul><p>These entries will be entered into the Sonarr configuration as follows: </p><ul><li><p><strong>URL</strong>: Jackett Indexer Torsnab Feed</p></li><li><p><strong>API Key</strong>: Jackett API Key</p></li></ul><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>Also configure the correct media categories which correspond with the categores listed for the indexer on Jackett.</p>
+</div></div><p>After entering the information for each index, hit the <strong>Test</strong> button to make sure that they’re working from Sonarr!</p><p>My final Indexers are as follows: </p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/16744589/17465442.png" data-image-src="attachments/16744589/17465442.png" data-height="299" data-width="677" data-unresolved-comment-count="0" data-linked-resource-id="17465442" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221022-160240.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="16744589" data-linked-resource-container-version="9" data-media-id="2c1f5dc9-a96e-4344-92ee-8c6d8e5cbdb6" data-media-type="file"></span><h2 id="HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Configuredownloadclient.">Configure download client. </h2><p>Our download client is Deluge! Navigate to <strong>Settings </strong>→ <strong>Download Clients</strong>. Select the + icon to add a client to Sonarr.</p><p>Enter in the information for our Deluge client: </p><ul><li><p><strong>Name</strong>: Deluge</p></li><li><p><strong>Enable</strong>: yes</p></li><li><p><strong>Host</strong>: 192.168.0.10</p></li><li><p><strong>Port</strong>: 8112</p></li><li><p><strong>Password</strong>: &lt;the password you configured for deluge&gt;</p></li><li><p><strong>Category</strong>: sonarr </p></li></ul><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>The Category here is the same as the Label name in Deluge!</p>
+</div></div><p>Hit <strong>Test </strong>to make sure the connection is working before moving on!</p><p>Our last step is to create a remote path mapping to connect Sonarr to the completed downloads folder that Deluge will move items labelled “sonarr” to. Scroll down to the bottom of the configuration and select the + icon beneath <strong>Remote Path Mappings</strong>.</p><p>Enter in the server IP for Deluge and enter in the directory information that Deluge uses for the Sonarr label: </p><ul><li><p><strong>Host:</strong> 192.168.0.10</p></li><li><p><strong>Remote Path</strong>: <code>/downloads/complete/sonarr</code></p></li><li><p><strong>Local Path</strong>: <code>/mnt/media/downloads/complete/sonarr</code></p></li></ul><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>Remember, the remote path is the path as Deluge understands it, while the local path is the mapping from the point of view of the Sonarr container.</p>
+</div></div><h2 id="HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Configuredownloadprofiles.">Configure download profiles.</h2><p>Navigate to <strong>Settings </strong>→ <strong>Profiles</strong>. Here you can configure requirements on any files that will be downloaded. These requirements are passed along to Jackett when it searches it’s indexers for torrents. There is only one thing I want to configure here, and that is adding some torrent uploader restrictions when downloading anime from nyaa. </p><p>Scroll to the bottom of the page and select the + icon beneath the <strong>Release Profiles </strong>section. Create a new release profile called <strong>Anime - Subbed</strong>. The restrictions we will define are for the torrent name to contain at least one of the following terms: </p><ul><li><p>HorribleSubs</p></li><li><p>horriblesubs</p></li><li><p>subsplease</p></li></ul><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/16744589/17334369.png" data-image-src="attachments/16744589/17334369.png" data-height="297" data-width="740" data-unresolved-comment-count="0" data-linked-resource-id="17334369" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221022-155448.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="16744589" data-linked-resource-container-version="9" data-media-id="1c3a72f9-da56-45e1-804f-573a0d41bf14" data-media-type="file"></span><p>Finally we need to specify that this restriction only applies to our Anime indexer: <strong>Jackett -</strong> <strong>Nyaa</strong>:</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/16744589/17334375.png" data-image-src="attachments/16744589/17334375.png" data-height="142" data-width="746" data-unresolved-comment-count="0" data-linked-resource-id="17334375" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20221022-155528.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="16744589" data-linked-resource-container-version="9" data-media-id="0cca3fff-3251-4e85-a5b4-09358c32c38b" data-media-type="file"></span><p>Hit Save and the restriction is created.</p><h1 id="HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Addingmedia.">Adding media.</h1><p>Media can be added to Sonarr in many different ways a few of which we’ll touch on here. Your added shows will appear in your <strong>Series</strong> tab. Any media that gets added which has upcoming shows being released will appear in the <strong>Calendar</strong> tab. Anything being downloaded at the moment can be viewed in the <strong>Activity</strong> →  <strong>Queue</strong> tab.</p><h2 id="HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Addingnewshows.">Adding new shows.</h2><p>Navigate to <strong>Series</strong> → <strong>Add New</strong> and search for the show you want to monitor. Here you can specify the folder name that will be created for the show, which episodes you want Sonarr to download and at what quality profile. What is important to configure is the <strong>Series Type</strong>. If the series is an anime, you want the downloads to move to specific indexers with specific criteria which are not going to work for normal series. Once you’ve finished the edit, select the <strong>Add</strong> button.</p><h2 id="HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Importexistingmedia.">Import existing media.</h2><p>To add any existing files to Sonarr, copy them into the <code>/mnt/media/anime</code> or <code>/mnt/media/series</code> folders. Then navigate to <strong>Series</strong> → <strong>Library Import</strong>. Here you can select the folder your media is located in and then map it to a particular show. </p><h1 id="HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-Conclusion.">Conclusion.</h1><p>There you go! If you can configure Sonarr, you should have almost no issue configuring media apps also ending in -arr. They are a fantastic collection of apps and they’ve bought me much joy. With everything we’ve set up so far, we have managed to achieve an almost complete loop for maintaining and downloading our media. What comes next is how to watch it.</p></div>
+</div>
+</div>
+<div class="columnLayout two-equal" data-layout="two-equal">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p>← <a href="16809985.html" data-linked-resource-id="16809985" data-linked-resource-version="5" data-linked-resource-type="page">Home Media Server, Part 3: Jackett</a> </p></div>
+</div>
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p style="text-align: right;"><a href="16744730.html" data-linked-resource-id="16744730" data-linked-resource-version="5" data-linked-resource-type="page">Home Media Server, Part 5: Plex</a> <strong>→ </strong> </p></div>
+</div>
+</div>
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h1 id="HomeMediaServer,Part4:Sonarr,Radarrandanyotharr-References.">References.</h1><ol><li><p><a class="external-link" data-card-appearance="inline" href="https://hub.docker.com/r/linuxserver/sonarr" rel="nofollow">https://hub.docker.com/r/linuxserver/sonarr</a> </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://zacholland.net/a-complete-guide-to-setting-up-a-plex-home-media-server-with-automated-requests-downloads/" rel="nofollow">https://zacholland.net/a-complete-guide-to-setting-up-a-plex-home-media-server-with-automated-requests-downloads/</a> </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://blog.harveydelaney.com/installing-radarr-sonar-and-deluge-on-your-unraid-setup/" rel="nofollow">https://blog.harveydelaney.com/installing-radarr-sonar-and-deluge-on-your-unraid-setup/</a>  </p></li></ol></div>
+</div>
+</div>
+</div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744605.png">image-20220823-143720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744608.png">image-20220823-144050.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744611.png">image-20220823-151304.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744614.png">image-20220823-151507.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744617.png">image-20220824-055924.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744620.png">image-20220824-061439.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744623.png">image-20220824-061657.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744626.png">image-20220824-061720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744629.png">image-20220824-062557.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744632.png">image-20220824-062711.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744635.png">image-20220824-062900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744638.png">image-20220824-065144.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744641.png">image-20220824-065900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744644.png">Picture1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744647.png">image-20220824-071403.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744650.png">image-20220824-071639.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744653.png">image-20220824-072603.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744656.png">image-20220824-072719.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744659.png">image-20220824-073135.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744662.png">image-20220824-073153.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744665.png">image-20220824-073531.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744668.png">image-20220824-073600.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744671.png">image-20220824-073716.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744674.png">image-20220824-073749.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/16744677.png">image-20220824-135836.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/17334369.png">image-20221022-155448.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/17334375.png">image-20221022-155528.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/16744589/17465442.png">image-20221022-160240.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Nov 11, 2022 08:05</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

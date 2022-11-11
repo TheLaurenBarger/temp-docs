@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Badger Quest : Home Server, Part 5: Remote Access (Cloudflare and NGINX Proxy Manager)</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Badger-Quest_229581.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home-Server_720897.html">Home Server</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Badger Quest : Home Server, Part 5: Remote Access (Cloudflare and NGINX Proxy Manager)
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+        
+            Created by <span class='author'> Lauren Barger</span>, last modified on Oct 18, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <div class="contentLayout2">
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p>I have a general requirement to access my home server from outside my network. This comes with a fair share of panic and stress over how to set things up properly. It would put a slight damper on things if the hackers got in and commandeered the toaster to subject myself and other friendlies to buttered sabotage. </p><p>Initially I had exposed a few of the home services with a duckdns domain name and nginx. I’ve since changed my mind about valuing free domains over peace of mind and have opted to buy my own domain and monitor things through CloudFlare. I’ll still be using nginx, but thought that this time I’d document things a little better for future me to look back on fondly to identify where I messed up and sacrificed the privacy of my toaster. </p><h1 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-TableofContents">Table of Contents</h1><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1668153850510 {padding: 0px;}
+div.rbtoc1668153850510 ul {list-style: none;margin-left: 0px;}
+div.rbtoc1668153850510 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1668153850510'>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Choosingadomainname.'>Choosing a domain name.</a></li>
+<li><span class='TOCOutline'>2</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Anobligatoryinfographic.'>An obligatory infographic.</a></li>
+<li><span class='TOCOutline'>3</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Registeringthedomain.'>Registering the domain.</a></li>
+<li><span class='TOCOutline'>4</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-NginxProxyManagerDockersetup.'>Nginx Proxy Manager Docker setup.</a></li>
+<li><span class='TOCOutline'>5</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Routerportopening.'>Router port opening.</a></li>
+<li><span class='TOCOutline'>6</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-CloudFlareconfiguration.'>CloudFlare configuration.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>6.1</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-CloudFlareDomainAPIToken.'>CloudFlare Domain API Token.</a></li>
+<li><span class='TOCOutline'>6.2</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-DomainDNSRecord.'>Domain DNS Record.</a></li>
+<li><span class='TOCOutline'>6.3</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-SSLconfiguration.'>SSL configuration.</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>7</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-NginxProxyManagerhosts.'>Nginx Proxy Manager hosts.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>7.1</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-NginxSSLconfiguration.'>Nginx SSL configuration.</a></li>
+<li><span class='TOCOutline'>7.2</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Nginxproxyhosts.'>Nginx proxy hosts.</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>8</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Testing.'>Testing.</a></li>
+<li><span class='TOCOutline'>9</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Conclusion.'>Conclusion.</a></li>
+<li><span class='TOCOutline'>10</span> <a href='#HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-References.'>References.</a></li>
+</ul>
+</div><h1 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Choosingadomainname.">Choosing a domain name.</h1><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>Props to Richard Watson for an awesome read on the subject: <a class="external-link" data-card-appearance="inline" href="https://richardwatson.co/choosing-a-domain-name.html" rel="nofollow">https://richardwatson.co/choosing-a-domain-name.html</a> </p>
+</div></div><p>I’ll put down my requirements for it as follows: </p><ul><li><p>Cheap</p></li><li><p>Mildly entertaining</p></li></ul><p>There’s not much to say on either point except that I’d probably be fairly happy with <a class="external-link" href="http://badgerr.duckdns.org" rel="nofollow">badgerr.duckdns.org</a> if I didn’t think it was a bit alarming that google seemed to think I was hosting a phishing site and if I hadn’t been sold on the wonders of CloudFlare after a few reads and chats with those who surely know better than I do. </p><p>In the end I found my domain in <a class="external-link" href="http://badger-quest.com" rel="nofollow">badger-quest.com</a>. Not only was it available, but comes with a .com attached, makes me giggle and is under $9.00 a year. Mission accomplished. </p><h1 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Anobligatoryinfographic.">An obligatory infographic.</h1><p>My setup will be as follows. Any requests to <a class="external-link" href="http://badger-quest.com" rel="nofollow">badger-quest.com</a> from the interwebs will all be routed through CloudFlare, which will give us a few great (and free) additional features. CloudFlare will be the only external entity which will hit my router public IP. All communication should hit the secure 443 port and use SSL.</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/262179.png" data-image-src="attachments/327719/262179.png" data-height="551" data-width="1103" data-unresolved-comment-count="0" data-linked-resource-id="262179" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220823-151507.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="9315da37-f484-4772-a723-ff7e0d89534b" data-media-type="file"></span><p>On my local network, the router’s public IP will route traffic through to an nginx container hosted on my home server. We’ll need to set up a passthrough rule on my router to route traffic from the router public IP and port 443 to the nginx server IP and port. Nginx will route traffic to the particular docker container associated with the prefix of the <a class="external-link" href="http://badger-quest.com" rel="nofollow">badger-quest.com</a> domain (eg, <a class="external-link" href="http://assistant.badger-quest.com" rel="nofollow">assistant.badger-quest.com</a> will route to the home assistant docker container).</p><h1 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Registeringthedomain.">Registering the domain.</h1><p>There are plenty of domain purchasing platforms to pick from, but I went with CloudFlare. Mostly because I intended to register the domain through CloudFlare and take advantage of some of their free features anyway and because there’s no markup involved in their domain registrar. </p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/294950.png" data-image-src="attachments/327719/294950.png" data-height="670" data-width="1153" data-unresolved-comment-count="0" data-linked-resource-id="294950" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220823-143720.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="bdc9f707-fbe0-4b16-abd2-b283f3de8e0e" data-media-type="file"></span><ol><li><p>Create an account, login and head over to the “Register Domains tab. </p></li><li><p>Enter in your <a class="external-link" href="http://awesomedomain.com" rel="nofollow">awesomedomain.com</a> and find the compromise you’re happy with.</p></li><li><p>Once you’ve purchased it, you should see it as a listed website for your account, otherwise add it. </p></li></ol><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/294957.png" data-image-src="attachments/327719/294957.png" data-height="321" data-width="1149" data-unresolved-comment-count="0" data-linked-resource-id="294957" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220823-144050.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="48d3a060-b7d9-41a0-9091-e7378d1478a5" data-media-type="file"></span><h1 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-NginxProxyManagerDockersetup.">Nginx Proxy Manager Docker setup.</h1><p>Let’s configure nginx proxy manager. I’ll be setting up npm on a docker container on my home server. </p><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p><a class="external-link" data-card-appearance="inline" href="https://nginxproxymanager.com/" rel="nofollow">https://nginxproxymanager.com/</a> is a docker hosted reverse proxy manager made simpler with a clean and intuitive interface. </p>
+</div></div><div class="confluence-information-macro confluence-information-macro-information"><span class="aui-icon aui-icon-small aui-iconfont-info confluence-information-macro-icon"></span><div class="confluence-information-macro-body"><p>Getting started with a docker home server</p></div></div><ol><li><p>First we’ll create a docker-compose entry for nginx proxy manager. All instructions to do so can be found in the <a class="external-link" href="https://nginxproxymanager.com/setup/#running-the-app" rel="nofollow">nginx proxy manger documentation</a>. There are two options available, to either have use the local DB instance for the nginx container or host your own one. My configuration is as follows: <br/></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">version: &#39;3.0&#39;
+
+services:
+  nginx:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx
+    depends_on:
+      - plex
+      - homeassistant
+    ports:
+      - 80:80
+      - 81:81
+      - 443:443
+    restart: unless-stopped
+    volumes:
+      - /opt/nginx/config:/config
+      - /opt/nginx/data:/data
+      - /opt/nginx/letsencrypt:/etc/letsencrypt</pre>
+</div></div><p /></li><li><p>Navigate to your server IP and the port that you mapped the nginx proxy manager port 81 to. In my case, <a class="external-link" href="http://172.0.0.1:81" rel="nofollow">http://172.0.0.1:81</a>. Login with the default email and password: <br/></p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">email: admin@example.com
+password: changeme</pre>
+</div></div><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/851969.png" data-image-src="attachments/327719/851969.png" data-height="335" data-width="751" data-unresolved-comment-count="0" data-linked-resource-id="851969" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-055924.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="325c878c-2f58-4870-bca2-faa08e936484" data-media-type="file"></span><p /></li><li><p>After logging in, you’ll be prompted to create your correct user which you’ll use for logging in from now on. </p></li></ol><h1 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Routerportopening.">Router port opening.</h1><p>Now that we’ve configured nginx proxy manager, we need to expose nginx container through our router. This step will be very different for the specific router. At the moment I have a D-Link DIR-825 and my configuration is as follows:</p><ol><li><p>Login to your router administration page, and find your port forwarding settings.</p></li><li><p>We need to configure 2 rules, one for http connections and another for https: </p></li></ol><div class="table-wrap"><table data-layout="default" data-local-id="dd552810-086e-4c9a-a1d6-189ac25e566e" class="confluenceTable"><colgroup><col style="width: 167.0px;"/><col style="width: 84.0px;"/><col style="width: 202.0px;"/><col style="width: 203.0px;"/><col style="width: 104.0px;"/></colgroup><tbody><tr><th class="confluenceTh"><p><strong>Name</strong></p></th><th class="confluenceTh"><p><strong>Protocol</strong></p></th><th class="confluenceTh"><p><strong>Public Port</strong></p></th><th class="confluenceTh"><p><strong>Private Port</strong></p></th><th class="confluenceTh"><p><strong>Public Port</strong></p></th></tr><tr><th class="confluenceTh"><p>badger-quest-http</p></th><td class="confluenceTd"><p>TCP</p></td><td class="confluenceTd"><p>nginx container IP address</p></td><td class="confluenceTd"><p>nginx port mapped to container port 80</p></td><td class="confluenceTd"><p>80</p></td></tr><tr><th class="confluenceTh"><p>badger-quest-https</p></th><td class="confluenceTd"><p>TCP</p></td><td class="confluenceTd"><p>nginx container IP address</p></td><td class="confluenceTd"><p>nginx port mapped to container port 443</p></td><td class="confluenceTd"><p>443</p></td></tr></tbody></table></div><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/426025.png" data-image-src="attachments/327719/426025.png" data-height="226" data-width="1188" data-unresolved-comment-count="0" data-linked-resource-id="426025" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-061720.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="bc70452b-1002-497a-a495-10f323c3e993" data-media-type="file"></span><p>What this does is redirect any traffic that the router receives on it’s public IP to the private IP and port of nginx proxy manager.</p><div class="panel" style="background-color: #B3D4FF;border-width: 1px;"><div class="panelContent" style="background-color: #B3D4FF;">
+<p><strong>Update: </strong></p><p>I’ve since switched service providers and therefore routers to a <a class="external-link" href="https://www.google.com/url?url=https://www.takealot.com/mikrotik-hap-ac2/PLID54756548&amp;rct=j&amp;q=&amp;esrc=s&amp;sa=U&amp;ved=0ahUKEwiCvdyD3o76AhWwSUEAHTGdDKEQ2SkIggo&amp;usg=AOvVaw2JEaqOO70_4822TeTBaegp" rel="nofollow">MikroTik hAP ac2</a>, and the port forwarding settings are a little different:</p><p />
+</div></div><h1 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-CloudFlareconfiguration.">CloudFlare configuration.</h1><p>Our router is now redirecting all traffic it receives on it’s public IP on ports 80 and 443 to the nginx proxy manager container on the corresponding ports. Our next step is to configure CloudFlare to direct all traffic received at <a class="external-link" href="http://badger-quest.com" rel="nofollow">badger-quest.com</a> to our router’s public IP. </p><h2 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-CloudFlareDomainAPIToken.">CloudFlare Domain API Token.</h2><p>CloudFlare is going to be responsible for creating an SSL cert for our domain. In order to do this, we will need an API token. </p><ol><li><p>Login to your CloudFlare account, go to your profile page and select the API Tokens option on the side menu. </p></li><li><p>Select the <strong>Create Token</strong> option.</p></li><li><p>Select the <strong>Edit zone DNS</strong> API template option.</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/1015840.png" data-image-src="attachments/327719/1015840.png" data-height="389" data-width="864" data-unresolved-comment-count="0" data-linked-resource-id="1015840" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-073716.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="b22735fa-861c-4f90-a320-55a9fb7e1b5c" data-media-type="file"></span><p /></li><li><p>All options here can be kept at default except the <strong>Zone Resources </strong>option which we need to change to <strong>All zones</strong>.</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/1081359.png" data-image-src="attachments/327719/1081359.png" data-height="467" data-width="1105" data-unresolved-comment-count="0" data-linked-resource-id="1081359" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-073749.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="7d700e0b-a308-4b10-80fd-5ac5831d4ce8" data-media-type="file"></span><p /></li><li><p>Hit <strong>Continue to Summary</strong> and create your token. </p></li></ol><div class="confluence-information-macro confluence-information-macro-note"><span class="aui-icon aui-icon-small aui-iconfont-warning confluence-information-macro-icon"></span><div class="confluence-information-macro-body"><p>Not, your token will not be accessible after leaving the <strong>API Tokens</strong> view. Make sure you save it in a safe place.</p></div></div><p>Once your token is created you can check to see if it’s been set up correctly by executing the curl command that will be displayed in the API Tokens view in a CMD window. The response should look something like this: </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">{&quot;result&quot;:{&quot;id&quot;:&quot;099ca3bb393e678a7ba10aa785d66fb0&quot;,&quot;status&quot;:&quot;active&quot;},&quot;success&quot;:true,&quot;errors&quot;:[],&quot;messages&quot;:[{&quot;code&quot;:10000,&quot;message&quot;:&quot;This API Token is valid and active&quot;,&quot;type&quot;:null}]}</pre>
+</div></div><h2 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-DomainDNSRecord.">Domain DNS Record.</h2><p>Head back to your website entry and go to the DNS option on the side panel. It’s here that we will configure how our subdomain points to our server IP.</p><p>For testing purposes, we will setup a subdomain for reading comics. I’ll expose an endpoint pointing to my <a class="external-link" data-card-appearance="inline" href="https://komga.org/" rel="nofollow">https://komga.org/</a> Docker container. Ideally, we will need to expose the home assistant container however, this requires additional setup which I’ll include in a separate article. </p><p>In order to setup our subdomain, we need to create an A record in our DNS settings for our domain. </p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/851992.png" data-image-src="attachments/327719/851992.png" data-height="269" data-width="1291" data-unresolved-comment-count="0" data-linked-resource-id="851992" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-065144.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="dc064ed1-f743-4495-b19f-2ae05569ed8e" data-media-type="file"></span><p>Select Add record and enter in the subdomain you’d like to point to your Docker container and the public IP of your router. </p><p>You can find the public IP of your router by going to <a class="external-link" href="https://www.whatismyip.com/" rel="nofollow">What Is My IP</a> or googling “what is my ip”. </p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/819210.png" data-image-src="attachments/327719/819210.png" data-height="219" data-width="960" data-unresolved-comment-count="0" data-linked-resource-id="819210" data-linked-resource-version="2" data-linked-resource-type="attachment" data-linked-resource-default-alias="Picture1.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="b0cd8525-192f-4f1f-b1e4-1686d1c1de9c" data-media-type="file"></span><h2 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-SSLconfiguration.">SSL configuration.</h2><p>Select the <strong>SSL/TLS</strong> tab on the left panel of CloudFlare. In the Overview screen change your SSL/TLS mode to <strong>Full (strict)</strong>. This will ensure that your traffic is encrypted end to end on the CloudFlare server.</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/1015834.png" data-image-src="attachments/327719/1015834.png" data-height="618" data-width="1294" data-unresolved-comment-count="0" data-linked-resource-id="1015834" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-073600.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="1db0c4da-a7c3-4f1b-8658-0a6006f65947" data-media-type="file"></span><p>Once done select the <strong>Edge Certificates </strong>option on the left panel and make sure <strong>Always Use HTTPS </strong>is enabled.</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/458813.png" data-image-src="attachments/327719/458813.png" data-height="290" data-width="1289" data-unresolved-comment-count="0" data-linked-resource-id="458813" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-073531.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="cbde1e95-6411-42e4-ad8a-a6a2d4c539b3" data-media-type="file"></span><h1 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-NginxProxyManagerhosts.">Nginx Proxy Manager hosts.</h1><p>At this point we have everything configured to direct traffic from <a class="external-link" href="http://comics.badger-quest.com" rel="nofollow">comics.badger-quest.com</a> to our router which is redirecting the traffic to our nginx proxy manager container. We still need to configure nginx proxy manager to direct traffic for a given subdomain to the correct docker container. We also still need to configure SSL. </p><h2 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-NginxSSLconfiguration.">Nginx SSL configuration.</h2><p>Open up your nginx proxy manager configuration page (your-server-ip:81), login and open up the <strong>SSL Certificates</strong> tab. Select <strong>Add SSL Certificate</strong>.</p><p>One option is to configure a different certificate for each subdomain you have (eg, a cert for <a class="external-link" href="http://comics.badger-quest.com" rel="nofollow">comics.badger-quest.com</a>, <a class="external-link" href="http://assistant.badger-quest.com" rel="nofollow">assistant.badger-quest.com</a>, etc.), however it’s simpler and cleaner to rather create a certificate with a wildcard so that we can use the same cert for every subdomain on <a class="external-link" href="http://badger-quest.com" rel="nofollow">badger-quest.com</a>. </p><p>I’ll enter the domain name as *.badger-quest.com, my email and enable the <strong>Use a DNS Challenge</strong> option. Our DNS provider is CloudFlare. The credentials file content will auto-populate a placeholder API token. Replace the token with the API token we generated in CloudFlare.</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/360508.png" data-image-src="attachments/327719/360508.png" data-height="892" data-width="505" data-unresolved-comment-count="0" data-linked-resource-id="360508" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-071403.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="a534483a-889c-4985-bf9d-ae8e82dcaf1e" data-media-type="file"></span><p>Agree to the terms of service and save. Your certificate will generate and appear in the SSL Certificates window. </p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/458799.png" data-image-src="attachments/327719/458799.png" data-height="224" data-width="1479" data-unresolved-comment-count="0" data-linked-resource-id="458799" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-071639.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="a0b8459f-bc6c-42c7-b4b2-31217c2f90ae" data-media-type="file"></span><h2 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Nginxproxyhosts.">Nginx proxy hosts.</h2><p>Our final step is to configure our nginx proxy manager sources. What this does is map an incoming subdomain to a given container on our private server. </p><p>Select the <strong>Hosts </strong>tab on nginx proxy manager, go to <strong>Proxy Hosts </strong>and select <strong>Add Proxy Host</strong>. </p><p>The <strong>Domain Names</strong> will be the A record that you set up on CloudFlare. We’ll be pointing that subdomain to the Komga instance on my private server. Add the private server IP and the port where the container is hosted.  </p><p>Whether or not the scheme should be http or https will depend on the container that you’re pointing to. Komga is set to use http, so we will set the record to http. Finally, it’s typically recommended to enable the <strong>Block Common Exploits</strong> option. </p><div class="confluence-information-macro confluence-information-macro-information"><span class="aui-icon aui-icon-small aui-iconfont-info confluence-information-macro-icon"></span><div class="confluence-information-macro-body"><p>Setting up an nginx host with an http connection is typically fine. The traffic between nginx proxy manager and the container will not be encrypted, however all traffic between nginx proxy manager and Cloudflare, and therefore any external connections, will be encrypted</p></div></div><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/1081351.png" data-image-src="attachments/327719/1081351.png" data-height="557" data-width="509" data-unresolved-comment-count="0" data-linked-resource-id="1081351" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-072603.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="69f70011-755e-4759-9beb-487a8a26c9ed" data-media-type="file"></span><p>Head over to the <strong>SSL tab</strong> on the New Proxy Host menu. Select the wildcard certificate that we created earlier, and set <strong>Force SSL</strong>. </p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/1146883.png" data-image-src="attachments/327719/1146883.png" data-height="394" data-width="505" data-unresolved-comment-count="0" data-linked-resource-id="1146883" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-072719.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="8debb0fb-d9c8-43b0-83b1-3ae0958912d1" data-media-type="file"></span><p>Hit <strong>Save</strong> and the entry should appear in your <strong>Proxy Hosts</strong> screen.</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/458807.png" data-image-src="attachments/327719/458807.png" data-height="222" data-width="1478" data-unresolved-comment-count="0" data-linked-resource-id="458807" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-073153.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="09d7b4c7-fd88-4708-8d4b-c7ffa3f96b10" data-media-type="file"></span><h1 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Testing.">Testing.</h1><p>If all is well, we should have exposed our comic endpoint to the universe! Let’s test. </p><p>Open up <a class="external-link" href="https://comics.badger-quest.com" rel="nofollow">https://comics.badger-quest.com</a> and check to make sure everything is accessed correctly. If all goes well, you should be able to access your site as you typically would through the local IP address. </p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/327719/1114121.png" data-image-src="attachments/327719/1114121.png" data-height="645" data-width="569" data-unresolved-comment-count="0" data-linked-resource-id="1114121" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220824-135836.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="327719" data-linked-resource-container-version="17" data-media-id="f0e7cff7-48ea-460f-9757-347636bec3a5" data-media-type="file"></span><div class="confluence-information-macro confluence-information-macro-information"><span class="aui-icon aui-icon-small aui-iconfont-info confluence-information-macro-icon"></span><div class="confluence-information-macro-body"><p>Note! You may need to open up the port on your local server firewall rules. For example, I needed to open up port 8585 on my home server in order to access it through the domain: </p></div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">sudo ufw allow 8585</pre>
+</div></div><h1 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-Conclusion.">Conclusion.</h1><p>At this point your home server is securely exposed to the greater web. Next steps include exposing home assistant over the same connection which includes a few additional steps in the home assistant configurations. </p></div>
+</div>
+</div>
+<div class="columnLayout two-equal" data-layout="two-equal">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p><strong>← </strong><a href="1212448.html" data-linked-resource-id="1212448" data-linked-resource-version="10" data-linked-resource-type="page">Home Server, Part 4: Docker Networks</a> </p></div>
+</div>
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<p style="text-align: right;"><a href="14942209.html" data-linked-resource-id="14942209" data-linked-resource-version="3" data-linked-resource-type="page">Home Server, Part 6: Dynamic External IP Address</a> <strong>→ </strong> </p></div>
+</div>
+</div>
+<div class="columnLayout fixed-width" data-layout="fixed-width">
+<div class="cell normal" data-type="normal">
+<div class="innerCell">
+<h1 id="HomeServer,Part5:RemoteAccess(CloudflareandNGINXProxyManager)-References.">References.</h1><ol><li><p><a class="external-link" data-card-appearance="inline" href="https://www.youtube.com/watch?v=GarMdDTAZJo" rel="nofollow">https://www.youtube.com/watch?v=GarMdDTAZJo</a> </p></li></ol><p /></div>
+</div>
+</div>
+</div>
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/294950.png">image-20220823-143720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/294957.png">image-20220823-144050.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/524307.png">image-20220823-151304.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/262179.png">image-20220823-151507.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/851969.png">image-20220824-055924.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/852000.png">Picture1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/458773.png">image-20220824-061439.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/884747.png">image-20220824-061657.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/426025.png">image-20220824-061720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/360486.png">image-20220824-062557.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/884755.png">image-20220824-062711.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/884761.png">image-20220824-062900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/851992.png">image-20220824-065144.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/1015815.png">image-20220824-065900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/819210.png">Picture1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/360508.png">image-20220824-071403.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/458799.png">image-20220824-071639.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/1081351.png">image-20220824-072603.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/1146883.png">image-20220824-072719.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/983053.png">image-20220824-073135.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/458807.png">image-20220824-073153.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/458813.png">image-20220824-073531.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/1015834.png">image-20220824-073600.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/1015840.png">image-20220824-073716.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/1081359.png">image-20220824-073749.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/327719/1114121.png">image-20220824-135836.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Nov 11, 2022 08:04</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

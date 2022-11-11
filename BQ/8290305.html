@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Badger Quest : Tasmota: Setup and Initial Configuration.</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Badger-Quest_229581.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home-Automation_655375.html">Home Automation</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Badger Quest : Tasmota: Setup and Initial Configuration.
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+        
+            Created by <span class='author'> Lauren Barger</span>, last modified on Oct 20, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>Tasmota is open source firmware designed for the ESP wifi chip series in order to give them MQTT functionality. Tasmota will give us a standard for any ESP defice connected to the home network. </p><p>This article will cover flashing Tasmota and accessing it’s WebUI. For further related Tasmota articles, take a look at:</p>    <ul class="relatedlabels-list">
+                    <li class="relatedlabel"><a class="label" rel="nofollow" href="/wiki/label/home-assistant">home-assistant</a></li>
+                    <li class="relatedlabel"><a class="label" rel="nofollow" href="/wiki/label/mqtt">mqtt</a></li>
+            </ul>
+<h1 id="Tasmota:SetupandInitialConfiguration.-TableofContents">Table of Contents</h1><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1668153892834 {padding: 0px;}
+div.rbtoc1668153892834 ul {list-style: none;margin-left: 0px;}
+div.rbtoc1668153892834 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1668153892834'>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1</span> <a href='#Tasmota:SetupandInitialConfiguration.-FlashingTasmota.'>Flashing Tasmota.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1.1</span> <a href='#Tasmota:SetupandInitialConfiguration.-Requiredcomponents.'>Required components.</a></li>
+<li><span class='TOCOutline'>1.2</span> <a href='#Tasmota:SetupandInitialConfiguration.-Tasmotafirmware.'>Tasmota firmware.</a></li>
+<li><span class='TOCOutline'>1.3</span> <a href='#Tasmota:SetupandInitialConfiguration.-WiringConfiguration.'>Wiring Configuration.</a></li>
+<li><span class='TOCOutline'>1.4</span> <a href='#Tasmota:SetupandInitialConfiguration.-FlashingtheESPboardwithTasmotizer.'>Flashing the ESP board with Tasmotizer.</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>2</span> <a href='#Tasmota:SetupandInitialConfiguration.-Initialconfiguration.'>Initial configuration.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>2.1</span> <a href='#Tasmota:SetupandInitialConfiguration.-AccessingtheWebUI.'>Accessing the WebUI.</a></li>
+<li><span class='TOCOutline'>2.2</span> <a href='#Tasmota:SetupandInitialConfiguration.-ConnectTasmotatoyourWiFiNetwork.'>Connect Tasmota to your WiFi Network.</a></li>
+<li><span class='TOCOutline'>2.3</span> <a href='#Tasmota:SetupandInitialConfiguration.-SetastaticIPaddress.'>Set a static IP address.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>2.3.1</span> <a href='#Tasmota:SetupandInitialConfiguration.-DHCPEntry.'>DHCP Entry.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class='TOCOutline'>3</span> <a href='#Tasmota:SetupandInitialConfiguration.-Conclusion.'>Conclusion.</a></li>
+<li><span class='TOCOutline'>4</span> <a href='#Tasmota:SetupandInitialConfiguration.-References.'>References.</a></li>
+</ul>
+</div><h1 id="Tasmota:SetupandInitialConfiguration.-FlashingTasmota.">Flashing Tasmota.</h1><p>Let’s take a look at what’s required for flashing Tasmota onto an ESP device.</p><h2 id="Tasmota:SetupandInitialConfiguration.-Requiredcomponents.">Required components.</h2><p>In order to flash Tasmota onto an ESP chip, we’ll require the following components: </p><ul><li><p>FTDI board </p></li><li><p>Jumper cables</p></li><li><p>ESP8266 board</p></li></ul><p>For this article, I used the following: </p><ul><li><p><a class="external-link" data-card-appearance="inline" href="https://www.mantech.co.za/ProductInfo.aspx?Item=15M0301-A" rel="nofollow">https://www.mantech.co.za/ProductInfo.aspx?Item=15M0301-A</a> - R76.72</p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://www.mantech.co.za/ProductInfo.aspx?Item=15M8769" rel="nofollow">https://www.mantech.co.za/ProductInfo.aspx?Item=15M8769</a>  - R64.43</p></li></ul><h2 id="Tasmota:SetupandInitialConfiguration.-Tasmotafirmware.">Tasmota firmware.</h2><p>The FTDI board will be used to flash the Tasmota firmware onto the the ESP-01 chip. In order to flash the firmware, we’ll also need to download: </p><ol><li><p><strong>Tasmota Firmware</strong><br/>Download the latest <code>tasmota.bin</code> file from the following link<a class="external-link" data-card-appearance="inline" href="http://ota.tasmota.com/tasmota/release/" rel="nofollow">http://ota.tasmota.com/tasmota/release/</a>  </p><span class="confluence-embedded-file-wrapper image-center-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image image-center" width="578" loading="lazy" src="attachments/8290305/8159261.png?width=578" data-image-src="attachments/8290305/8159261.png" data-height="220" data-width="830" data-unresolved-comment-count="0" data-linked-resource-id="8159261" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220930-164002.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="8290305" data-linked-resource-container-version="14" data-media-id="d72165bc-fa06-492c-974c-f46479bf37c8" data-media-type="file"></span><p /></li><li><p>Tasmotizer flashing software<br/>Download the tasmotizer installation from the following link <a class="external-link" data-card-appearance="inline" href="https://github.com/tasmota/tasmotizer/releases" rel="nofollow">https://github.com/tasmota/tasmotizer/releases</a>  </p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/8290305/8454147.png" data-image-src="attachments/8290305/8454147.png" data-height="470" data-width="620" data-unresolved-comment-count="0" data-linked-resource-id="8454147" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220930-164148.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="8290305" data-linked-resource-container-version="14" data-media-id="73b54b93-5ff7-4128-abe5-799b13eb7baf" data-media-type="file"></span></li></ol><h2 id="Tasmota:SetupandInitialConfiguration.-WiringConfiguration.">Wiring Configuration.</h2><p>In order to flash the ESP-01 chip, we need to connect the relevant pins to the FTDI chip.</p><div class="confluence-information-macro confluence-information-macro-note"><span class="aui-icon aui-icon-small aui-iconfont-warning confluence-information-macro-icon"></span><div class="confluence-information-macro-body"><p>The ESP chip is strictly rated for 3.3V. Anything higher than that will damage the chip</p></div></div><p>The ESP chip requires a 3.3V input. The FTDI board that I’m using can be set to 3.3V mode by connecting the following two pins 3.3V and the center pin as shown on the right.</p><p>The FTDI module needs to be able to supply at least 300mA. This one should be able to supply 500mA.</p><span class="confluence-embedded-file-wrapper image-right-wrap-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image image-wrap-right" width="272" loading="lazy" src="attachments/8290305/9535497.jpg?width=272" data-image-src="attachments/8290305/9535497.jpg" data-height="1280" data-width="883" data-unresolved-comment-count="0" data-linked-resource-id="9535497" data-linked-resource-version="2" data-linked-resource-type="attachment" data-linked-resource-default-alias="Slide1.jpg" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/jpeg" data-linked-resource-container-id="8290305" data-linked-resource-container-version="14" data-media-id="aee889ab-87b6-4a27-a02e-d27b589960c5" data-media-type="file"></span><p>The ESP board will be connected to the breakout pins of the FTDI board. The FTDI board has a mini USB port which we’ll connect to a PC so that we can flash the chip with Tasmotizer. </p><p><strong>Connect the FT232RL to the ESP-01S as follows:</strong></p><ul><li><p>ESP-01S GND → FT232 GND: Common Ground</p></li><li><p>ESP-01S GPIO0 → FT232 GND: Boot into Programming Mode </p></li><li><p>ESP-01S VCC → FT232 VCC: 3.3V</p></li><li><p>ESP-01S CH_PD → FT232 VCC: 3.3V</p></li><li><p>ESP-01S RX → FT232 TX</p></li><li><p>ESP-01S TX → FT232 RX</p></li></ul><h2 id="Tasmota:SetupandInitialConfiguration.-FlashingtheESPboardwithTasmotizer.">Flashing the ESP board with Tasmotizer.</h2><p>With the wiring configuration above, connect the FT232RL to your PC with a mini USB to USB cable. Open up the Tasmotizer app. After the FT232RL has been connected, refresh the com port on Tasmotizer to ensure you’ve selected the correct one. </p><p>Select the tasmota bin directory as the image to flash and hit <strong>Tazmotize</strong>.</p><span class="confluence-embedded-file-wrapper image-center-wrapper"><img class="confluence-embedded-image image-center" loading="lazy" src="attachments/8290305/9469959.png" data-image-src="attachments/8290305/9469959.png" data-height="456" data-width="490" data-unresolved-comment-count="0" data-linked-resource-id="9469959" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="image-20220925-155557.png" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/png" data-linked-resource-container-id="8290305" data-linked-resource-container-version="14" data-media-id="34107326-0ff7-4c4c-8140-23709f151ae3" data-media-type="file"></span><p>Wait for Tasmotizer to completely finish flashing the ESP chip and then disconnect the cables from: </p><ul><li><p>ESP-01S GPIO0 → FT232 GND: Remove so that device will boot normally</p></li><li><p>ESP-01S CH_PD → FT232 VCC: 3.3V</p></li></ul><p>The only remaining connections should then be: </p><ul><li><p>ESP-01S GND → FT232 GND: Common Ground</p></li><li><p>ESP-01S VCC → FT232 VCC: 3.3V</p></li><li><p>ESP-01S RX → FT232 TX</p></li><li><p>ESP-01S TX → FT232 RX</p></li></ul><h1 id="Tasmota:SetupandInitialConfiguration.-Initialconfiguration.">Initial configuration.</h1><p>Now that Tasmota has been flashed onto the ESP chip, let’s take a look at first time configurations for Tasmota. Ensure that the ESP chip is still powered.</p><h2 id="Tasmota:SetupandInitialConfiguration.-AccessingtheWebUI.">Accessing the WebUI.</h2><span class="confluence-embedded-file-wrapper image-right-wrap-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image image-wrap-right" width="204" loading="lazy" src="attachments/8290305/10125315.jpeg?width=204" data-image-src="attachments/8290305/10125315.jpeg" data-height="336" data-width="523" data-unresolved-comment-count="0" data-linked-resource-id="10125315" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="WhatsApp Image 2022-10-06 at 16.59.20-20221006-152158.jpeg" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/jpeg" data-linked-resource-container-id="8290305" data-linked-resource-container-version="14" data-media-id="8cedd5c7-38aa-4271-9995-95222d104a95" data-media-type="file"></span><p>Using any WiFi enabled device, search through the available WiFi networks for a network named tasmota-XXXXXX-XXXX. </p><p>After connecting to the tasmota local wifi, navigate to 192.168.4.1 to reach the Tasmota WebUI.</p><h2 id="Tasmota:SetupandInitialConfiguration.-ConnectTasmotatoyourWiFiNetwork.">Connect Tasmota to your WiFi Network.</h2><p>After connecting to the WebUI, you will be presented with a screen to configure network access for the Tasmota device.</p><p>Select the network you want to connect the device to and enter in your WiFi password. On a successful connection, the device will display a success message. </p><span class="confluence-embedded-file-wrapper image-left-wrap-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image image-wrap-left" width="340" loading="lazy" src="attachments/8290305/9994245.jpeg?width=340" data-image-src="attachments/8290305/9994245.jpeg" data-height="970" data-width="523" data-unresolved-comment-count="0" data-linked-resource-id="9994245" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="WhatsApp Image 2022-10-06 at 16.59.20 (1)-20221006-152545.jpeg" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/jpeg" data-linked-resource-container-id="8290305" data-linked-resource-container-version="14" data-media-id="35748b8c-498a-4544-9dfa-bd053a07ecc9" data-media-type="file"></span><span class="confluence-embedded-file-wrapper image-right-wrap-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image image-wrap-right" width="340" loading="lazy" src="attachments/8290305/9469965.jpeg?width=340" data-image-src="attachments/8290305/9469965.jpeg" data-height="545" data-width="523" data-unresolved-comment-count="0" data-linked-resource-id="9469965" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="WhatsApp Image 2022-10-06 at 16.59.20 (2)-20221006-152708.jpeg" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/jpeg" data-linked-resource-container-id="8290305" data-linked-resource-container-version="14" data-media-id="95d58d9a-c3ba-4c28-b2e1-80277bdbf4e9" data-media-type="file"></span><p /><p>At this point the Tasmota network will no longer be available. Your device should automatically reconnect to it’s original network. The Tasmota device will now be available at it’s allocated IP address on it’s connected network. </p><div class="panel" style="background-color: #EAE6FF;border-color: #998DD9;border-width: 1px;"><div class="panelContent" style="background-color: #EAE6FF;">
+<p>If you miss the new IP address, use the IP scanning feature on RouterOS:</p><p><code>Tools -&gt; IP Scan -&gt; Start</code></p>
+</div></div><p>Navigating to the allocated IP address of the tasmota device will direct you to the Tasmota WebUI:</p><span class="confluence-embedded-file-wrapper image-center-wrapper confluence-embedded-manual-size"><img class="confluence-embedded-image image-center" width="204" loading="lazy" src="attachments/8290305/10584071.jpeg?width=204" data-image-src="attachments/8290305/10584071.jpeg" data-height="840" data-width="523" data-unresolved-comment-count="0" data-linked-resource-id="10584071" data-linked-resource-version="1" data-linked-resource-type="attachment" data-linked-resource-default-alias="WhatsApp Image 2022-10-06 at 16.59.21-20221006-153350.jpeg" data-base-url="https://badgerr.atlassian.net/wiki" data-linked-resource-content-type="image/jpeg" data-linked-resource-container-id="8290305" data-linked-resource-container-version="14" data-media-id="f5b80684-81c1-4d7a-8bc6-6ce09afb8701" data-media-type="file"></span><h2 id="Tasmota:SetupandInitialConfiguration.-SetastaticIPaddress.">Set a static IP address.</h2><p>The Tasmota chip can store it’s own static IP address, or else the static IP can be set through your router. </p><p>Tasmota static IP address.</p><ol><li><p>Log onto the Tasmota interface.</p></li><li><p>Navigate to the web console.</p></li><li><p>Enter the following command:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">IPAddress1 192.168.0.105</pre>
+</div></div><p><br/>The following lines should appear once the static IP has been set: </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">06:43:00.914 CMD: IPAddress1 192.168.0.105
+06:43:00.920 MQT: /misc/sitbit/stat/RESULT = {&quot;IPAddress1&quot;:&quot;192.168.0.105 (192.168.0.105)&quot;}</pre>
+</div></div></li></ol><h3 id="Tasmota:SetupandInitialConfiguration.-DHCPEntry.">DHCP Entry.</h3><p>Log onto the RouterOS admin console and proceed with the following steps:</p><ol><li><p>Navigate to <strong>IP</strong> → <strong>DHCP Server</strong> → <strong>Leases</strong>.</p></li><li><p>Locate the IP address of the Raspberry Pi hosting OctoPrint</p></li><li><p>Select <strong>Make Static</strong></p></li></ol><h1 id="Tasmota:SetupandInitialConfiguration.-Conclusion.">Conclusion.</h1><p>At this point, the Tasmota binary has been flashed onto the ESP IC and the WebUI is available to further configure the Tasmota functionality. </p><p>For next steps, take a look at <a href="10846209.html" data-linked-resource-id="10846209" data-linked-resource-version="6" data-linked-resource-type="page">Tasmota: Configuring MQTT Integration</a> </p><h1 id="Tasmota:SetupandInitialConfiguration.-References.">References.</h1><ol><li><p><a class="external-link" data-card-appearance="inline" href="https://tasmota.github.io/docs/About/" rel="nofollow">https://tasmota.github.io/docs/About/</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://www.mantech.co.za" rel="nofollow">https://www.mantech.co.za</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="http://ota.tasmota.com/tasmota/release/" rel="nofollow">http://ota.tasmota.com/tasmota/release/</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://github.com/tasmota/tasmotizer/releases" rel="nofollow">https://github.com/tasmota/tasmotizer/releases</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://github.com/achimpieters/Fritzing-Custom-Parts/releases" rel="nofollow">https://github.com/achimpieters/Fritzing-Custom-Parts/releases</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://tasmota.github.io/docs/Getting-Started/" rel="nofollow">https://tasmota.github.io/docs/Getting-Started/</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://behind-the-scenes.net/connecting-the-esp8266-to-a-breadboard-and-ftdi-programmer/" rel="nofollow">https://behind-the-scenes.net/connecting-the-esp8266-to-a-breadboard-and-ftdi-programmer/</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://tasmota.github.io/docs/Getting-Started/#initial-configuration" rel="nofollow">https://tasmota.github.io/docs/Getting-Started/#initial-configuration</a>  </p></li><li><p><a href="10846209.html" data-linked-resource-id="10846209" data-linked-resource-version="6" data-linked-resource-type="page">Tasmota: Configuring MQTT Integration</a> </p></li></ol><p />
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290312.png">image-20220823-143720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290315.png">image-20220823-144050.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290318.png">image-20220823-151304.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290321.png">image-20220823-151507.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290324.png">image-20220824-055924.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290327.png">image-20220824-061439.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290330.png">image-20220824-061657.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290333.png">image-20220824-061720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290336.png">image-20220824-062557.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290339.png">image-20220824-062711.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290342.png">image-20220824-062900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290345.png">image-20220824-065144.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290348.png">image-20220824-065900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290351.png">Picture1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290354.png">image-20220824-071403.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290357.png">image-20220824-071639.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290360.png">image-20220824-072603.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290363.png">image-20220824-072719.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290366.png">image-20220824-073135.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290369.png">image-20220824-073153.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290372.png">image-20220824-073531.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290375.png">image-20220824-073600.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290378.png">image-20220824-073716.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290381.png">image-20220824-073749.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8290384.png">image-20220824-135836.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8159261.png">image-20220930-164002.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8454147.png">image-20220930-164148.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8192013.png">image-20220930-164851.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8159273.png">ftdi-20220930-165526.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8683530.png">ftdi-20220930-170216.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/8159281.png">image-20220930-171628.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/9502723.png">ftdi-esp-01s.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/9437191.png">ftdi-esp-01s.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/9502736.jpg">Slide1.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/9535497.jpg">Slide1.jpg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/9469959.png">image-20220925-155557.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/10420227.png">image-20221006-152104.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/10125315.jpeg">WhatsApp Image 2022-10-06 at 16.59.20-20221006-152158.jpeg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/9994245.jpeg">WhatsApp Image 2022-10-06 at 16.59.20 (1)-20221006-152545.jpeg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/9469965.jpeg">WhatsApp Image 2022-10-06 at 16.59.20 (2)-20221006-152708.jpeg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/9928709.png">image-20221006-153128.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/10780675.png">image-20221006-153332.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/10584071.jpeg">WhatsApp Image 2022-10-06 at 16.59.21-20221006-153350.jpeg</a> (image/jpeg)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/8290305/9666572.jpeg">WhatsApp Image 2022-10-06 at 16.59.21 (1)-20221006-153537.jpeg</a> (image/jpeg)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Nov 11, 2022 08:04</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>

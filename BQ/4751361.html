@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Badger Quest : Troubleshooting: Linux mounts drive as read-only</title>
+        <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body class="theme-default aui-theme-default">
+        <div id="page">
+            <div id="main" class="aui-page-panel">
+                <div id="main-header">
+                    <div id="breadcrumb-section">
+                        <ol id="breadcrumbs">
+                            <li class="first">
+                                <span><a href="index.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Badger-Quest_229581.html">Badger Quest</a></span>
+                            </li>
+                                                    <li>
+                                <span><a href="Home-Media-Server_1442078.html">Home Media Server</a></span>
+                            </li>
+                                                </ol>
+                    </div>
+                    <h1 id="title-heading" class="pagetitle">
+                                                <span id="title-text">
+                            Badger Quest : Troubleshooting: Linux mounts drive as read-only
+                        </span>
+                    </h1>
+                </div>
+
+                <div id="content" class="view">
+                    <div class="page-metadata">
+                        
+        
+    
+        
+    
+        
+        
+            Created by <span class='author'> Lauren Barger</span>, last modified on Sep 21, 2022
+                        </div>
+                    <div id="main-content" class="wiki-content group">
+                    <p>We switched our ISP and had a fun week or so without internet. To save ourselves from the unknown horrors of experiencing the universe for more than a few hours without the relief of a screen, we connected the NUC external hard drive to the Xbox and watched anime. Of course, Xbox is Microsoft. And Microsoft does not play nicely with Linux.</p><h1 id="Troubleshooting:Linuxmountsdriveasread-only-TableofContents">Table of Contents</h1><style type='text/css'>/*<![CDATA[*/
+div.rbtoc1668153929722 {padding: 0px;}
+div.rbtoc1668153929722 ul {list-style: none;margin-left: 0px;}
+div.rbtoc1668153929722 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>*/</style><div class='toc-macro rbtoc1668153929722'>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>1</span> <a href='#Troubleshooting:Linuxmountsdriveasread-only-Symptoms.'>Symptoms.</a></li>
+<li><span class='TOCOutline'>2</span> <a href='#Troubleshooting:Linuxmountsdriveasread-only-Cause.'>Cause.</a></li>
+<li><span class='TOCOutline'>3</span> <a href='#Troubleshooting:Linuxmountsdriveasread-only-Howtofix.'>How to fix.</a>
+<ul class='toc-indentation'>
+<li><span class='TOCOutline'>3.1</span> <a href='#Troubleshooting:Linuxmountsdriveasread-only-UnmountingandremountingHDDonLinux.'>Unmounting and remounting HDD on Linux.</a></li>
+</ul>
+</li>
+<li><span class='TOCOutline'>4</span> <a href='#Troubleshooting:Linuxmountsdriveasread-only-Conclusion.'>Conclusion.</a></li>
+<li><span class='TOCOutline'>5</span> <a href='#Troubleshooting:Linuxmountsdriveasread-only-References.'>References.</a></li>
+</ul>
+</div><h1 id="Troubleshooting:Linuxmountsdriveasread-only-Symptoms.">Symptoms.</h1><p>The HDD connected to your Linux machine is mounted as a read-only file system. </p><ol><li><p>Services interacting with the device will report read only file system errors, eg, Deluge logs: </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">chown: changing ownership of &#39;/downloads/complete/sonarr&#39;: Read-only file system
+chown: changing ownership of &#39;/downloads/complete&#39;: Read-only file system
+chown: changing ownership of &#39;/downloads/incomplete/[SubsPlease] Kingdom S4 - 09 (720p) [2DD3756A].mkv&#39;: Read-only file system
+chown: changing ownership of &#39;/downloads/incomplete/[SubsPlease] One Piece - 1023 (720p) [0B854FE9].mkv&#39;: Read-only file system
+chown: changing ownership of &#39;/downloads/incomplete&#39;: Read-only file system
+chown: changing ownership of &#39;/downloads&#39;: Read-only file system</pre>
+</div></div></li><li><p>Unmounting and remounting the drive returns the following error: </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">badger@nuc01:~$ sudo mount /dev/sdb1 /mnt/media/
+The disk contains an unclean file system (0, 0).
+Metadata kept in Windows cache, refused to mount.
+Falling back to read-only mount because the NTFS partition is in an
+unsafe state. Please resume and shutdown Windows fully (no hibernation
+or fast restarting.)
+Could not mount read-write, trying read-only</pre>
+</div></div></li></ol><h1 id="Troubleshooting:Linuxmountsdriveasread-only-Cause.">Cause.</h1><p>The HDD is an NTFS formatted disk. NTFS is a Microsoft file system. The error here is being caused by a the HDD not being properly ejected from a Microsoft OS. This can either be caused by a Windows machine hibernating instead of shutting down, or removing the hard drive without properly disconnecting it. </p><p>The result is that the Windows system is saved in a hibernated state on the HDD. This is saved in a file called hiberfil.sys which tells any other OS that Windows is hibernated on this file system and is intending to be resumed. Any other OS which connects to this drive will mount it as a read-only file system since Windows has reported that the drive is still in use by a Windows OS.</p><h1 id="Troubleshooting:Linuxmountsdriveasread-only-Howtofix.">How to fix.</h1><p>The fix is simple is thankfully simple. The drive just needs to be properly ejected from a Windows machine and then remounted on Linux: </p><ol><li><p>Unmount the drive from your Linux OS</p></li><li><p>Connect the drive to a Windows machine. </p></li><li><p>If prompted, choose to repair the drive. </p></li><li><p>Properly eject the drive using the drawer icon. </p></li><li><p>Reconnect the drive to your Linux machine</p></li></ol><h2 id="Troubleshooting:Linuxmountsdriveasread-only-UnmountingandremountingHDDonLinux.">Unmounting and remounting HDD on Linux.</h2><p>To list the available disks connected to your linux system use the following command: </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">lsblk</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">badger@nuc01:/opt$ lsblk
+NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+loop0                       7:0    0    62M  1 loop /snap/core20/1611
+loop1                       7:1    0    47M  1 loop /snap/snapd/16292
+loop2                       7:2    0  67.8M  1 loop /snap/lxd/22753
+loop3                       7:3    0    48M  1 loop /snap/snapd/16778
+loop4                       7:4    0  63.2M  1 loop /snap/core20/1623
+loop5                       7:5    0  67.2M  1 loop /snap/lxd/21835
+sda                         8:0    0 223.6G  0 disk 
+├─sda1                      8:1    0   1.1G  0 part /boot/efi
+├─sda2                      8:2    0     2G  0 part /boot
+└─sda3                      8:3    0 220.5G  0 part 
+  └─ubuntu--vg-ubuntu--lv 253:0    0   100G  0 lvm  /
+sdb                         8:16   0   1.8T  0 disk 
+└─sdb1                      8:17   0   1.8T  0 part /mnt/media
+</pre>
+</div></div><div id="expander-1443445750" class="expand-container"><div id="expander-control-1443445750" class="expand-control"><span class="expand-control-icon"><img style="vertical-align:middle;" class="expand-control-image" src="images/icons/grey_arrow_down.png"></span><span class="expand-control-text">Click here to expand...</span></div><div id="expander-content-1443445750" class="expand-content"><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">lsblk -f</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">badger@nuc01:/opt$ lsblk -f
+NAME                      FSTYPE      LABEL                      UUID                                   FSAVAIL FSUSE% MOUNTPOINT
+loop0                     squashfs                                                                            0   100% /snap/core20/1611
+loop1                     squashfs                                                                            0   100% /snap/snapd/16292
+loop2                     squashfs                                                                            0   100% /snap/lxd/22753
+loop3                     squashfs                                                                            0   100% /snap/snapd/16778
+loop4                     squashfs                                                                            0   100% /snap/core20/1623
+loop5                     squashfs                                                                            0   100% /snap/lxd/21835
+sda                                                                                                                    
+├─sda1                    vfat                                   DAED-1AEE                                   1G     0% /boot/efi
+├─sda2                    ext4                                   3d7ecb9d-99cc-469d-a547-32b4a5d89322      1.6G    11% /boot
+└─sda3                    LVM2_member                            BS73dt-byR6-bfrt-X5qT-N6M5-ANUV-jT42Re                
+  └─ubuntu--vg-ubuntu--lv ext4                                   39d0e7aa-dd0d-4d8b-b1fe-d0536d48da4f     75.7G    18% /
+sdb                                                                                                                    
+└─sdb1                    ntfs        Dwayne the Rock Hard Drive 8A32AB1232AB01F5</pre>
+</div></div></div></div><p>The last entry here shows that the drive sdb/sdb1 is currently mounted on the directory /mnt/media.</p><p>To unmount the drive use the following command: </p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">sudo umount /mnt/media</pre>
+</div></div><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">badger@nuc01:/opt$ sudo umount /mnt/media
+badger@nuc01:/opt$ lsblk
+NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+loop0                       7:0    0    62M  1 loop /snap/core20/1611
+loop1                       7:1    0    47M  1 loop /snap/snapd/16292
+loop2                       7:2    0  67.8M  1 loop /snap/lxd/22753
+loop3                       7:3    0    48M  1 loop /snap/snapd/16778
+loop4                       7:4    0  63.2M  1 loop /snap/core20/1623
+loop5                       7:5    0  67.2M  1 loop /snap/lxd/21835
+sda                         8:0    0 223.6G  0 disk 
+├─sda1                      8:1    0   1.1G  0 part /boot/efi
+├─sda2                      8:2    0     2G  0 part /boot
+└─sda3                      8:3    0 220.5G  0 part 
+  └─ubuntu--vg-ubuntu--lv 253:0    0   100G  0 lvm  /
+sdb                         8:16   0   1.8T  0 disk 
+└─sdb1                      8:17   0   1.8T  0 part</pre>
+</div></div><p>At this point the drive is no longer mounted on the Linux OS. You can remove the drive and connect it to a Windows machine, to repair and properly eject the drive. </p><p>To remount the device, connect it to the Linux machine and confirm the drive path:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">badger@nuc01:/opt$ lsblk
+NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+loop0                       7:0    0    62M  1 loop /snap/core20/1611
+loop1                       7:1    0    47M  1 loop /snap/snapd/16292
+loop2                       7:2    0  67.8M  1 loop /snap/lxd/22753
+loop3                       7:3    0    48M  1 loop /snap/snapd/16778
+loop4                       7:4    0  63.2M  1 loop /snap/core20/1623
+loop5                       7:5    0  67.2M  1 loop /snap/lxd/21835
+sda                         8:0    0 223.6G  0 disk 
+├─sda1                      8:1    0   1.1G  0 part /boot/efi
+├─sda2                      8:2    0     2G  0 part /boot
+└─sda3                      8:3    0 220.5G  0 part 
+  └─ubuntu--vg-ubuntu--lv 253:0    0   100G  0 lvm  /
+sdb                         8:16   0   1.8T  0 disk 
+└─sdb1                      8:17   0   1.8T  0 part</pre>
+</div></div><p>Once you’ve confirmed the drive path (sdb/sdb1), mount the drive to the desired mount folder (/mnt/media) using the following command:</p><div class="code panel pdl" style="border-width: 1px;"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: java; gutter: false; theme: Confluence" data-theme="Confluence">sudo mount /dev/sdb1 /mnt/media/</pre>
+</div></div><h1 id="Troubleshooting:Linuxmountsdriveasread-only-Conclusion.">Conclusion.</h1><p>There you have it! An interesting problem caused by the nuances of having different operating systems interacting with the same storage. Thankfully an easy fix as well!</p><h1 id="Troubleshooting:Linuxmountsdriveasread-only-References.">References.</h1><ol><li><p><a class="external-link" data-card-appearance="inline" href="https://www.tomshardware.com/how-to/mount-drives-linux" rel="nofollow">https://www.tomshardware.com/how-to/mount-drives-linux</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://askubuntu.com/questions/1200201/external-hard-drive-set-to-read-only-on-ubuntu-18-04" rel="nofollow">https://askubuntu.com/questions/1200201/external-hard-drive-set-to-read-only-on-ubuntu-18-04</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://www.technipages.com/windows-10-goes-into-hibernation-when-shut-down" rel="nofollow">https://www.technipages.com/windows-10-goes-into-hibernation-when-shut-down</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://www.atera.com/blog/ntfs-vs-fat-what-do-i-need-to-know-as-an-it-service-provider/" rel="nofollow">https://www.atera.com/blog/ntfs-vs-fat-what-do-i-need-to-know-as-an-it-service-provider/</a>  </p></li><li><p><a class="external-link" data-card-appearance="inline" href="https://askubuntu.com/questions/145902/unable-to-mount-windows-ntfs-filesystem-due-to-hibernation" rel="nofollow">https://askubuntu.com/questions/145902/unable-to-mount-windows-ntfs-filesystem-due-to-hibernation</a>  </p></li></ol><p />
+                    </div>
+
+                                        <div class="pageSection group">
+                        <div class="pageSectionHeader">
+                            <h2 id="attachments" class="pageSectionTitle">Attachments:</h2>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751368.png">image-20220823-143720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751371.png">image-20220823-144050.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751374.png">image-20220823-151304.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751377.png">image-20220823-151507.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751380.png">image-20220824-055924.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751383.png">image-20220824-061439.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751386.png">image-20220824-061657.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751389.png">image-20220824-061720.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751392.png">image-20220824-062557.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751395.png">image-20220824-062711.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751398.png">image-20220824-062900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751401.png">image-20220824-065144.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751404.png">image-20220824-065900.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751407.png">Picture1.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751410.png">image-20220824-071403.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751413.png">image-20220824-071639.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751416.png">image-20220824-072603.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751419.png">image-20220824-072719.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751422.png">image-20220824-073135.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751425.png">image-20220824-073153.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751428.png">image-20220824-073531.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751431.png">image-20220824-073600.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751434.png">image-20220824-073716.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751437.png">image-20220824-073749.png</a> (image/png)
+                                <br/>
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="attachments/4751361/4751440.png">image-20220824-135836.png</a> (image/png)
+                                <br/>
+                                                    </div>
+                    </div>
+                    
+                                                      
+                </div>             </div> 
+            <div id="footer" role="contentinfo">
+                <section class="footer-body">
+                    <p>Document generated by Confluence on Nov 11, 2022 08:05</p>
+                    <div id="footer-logo"><a href="http://www.atlassian.com/">Atlassian</a></div>
+                </section>
+            </div>
+        </div>     </body>
+</html>
