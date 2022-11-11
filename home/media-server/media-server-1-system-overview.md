@@ -1,17 +1,16 @@
+# Media Server, Part 1: System Overview
+
 Before we dig into the how-to, let’s take a look at where we’re heading.
 
-This section assumes the following has been completed:
-
-[Home Server, Part 1: Hardware](2031617.html)
-
-[Home Server, Part 2: Ubuntu OS](14024705.html)
-
-[Home Server, Part 3: Docker](1900552.html)
+> This section assumes the following has been completed:
+>
+> * [Home Server, Part 1: Hardware](2031617.html)
+> * [Home Server, Part 2: Ubuntu OS](14024705.html)
+> * [Home Server, Part 3: Docker](1900552.html)
 
 <!-- Table of Contents -->
 
-Home media server structure.
-============================
+## Home media server structure
 
 In order of installation, the components of the media server setup that we will cover the installation and configuration for is as follows:
 
@@ -35,17 +34,13 @@ Plex is a “client-server media system”. It will give us a platform for watch
 
 Overseerr is a web application that we can use to add requests to our media server and alert us when those requests are fulfilled.
 
-For a hysterical and actually extremely accurate technology selection guide, have a look at this fantastic flow chart for Home Media Server setup: [https://imgur.com/chNkIx6](https://imgur.com/chNkIx6)
+>For a hysterical and actually extremely accurate technology selection guide, have a look at this fantastic flow chart for Home Media Server setup: [https://imgur.com/chNkIx6](https://imgur.com/chNkIx6)
 
-Conclusion.
-===========
+## Conclusion
 
 And that’s our road map for the moment! We’ll continue on with our first step: Deluge!
 
-[Home Media Server, Part 2: Deluge](16744449.html) **→**
-
-References.
-===========
+## References
 
 1. [https://github.com/sebgl/htpc-download-box](https://github.com/sebgl/htpc-download-box)
 2. [https://blog.harveydelaney.com/installing-radarr-sonar-and-deluge-on-your-unraid-setup/](https://blog.harveydelaney.com/installing-radarr-sonar-and-deluge-on-your-unraid-setup/)

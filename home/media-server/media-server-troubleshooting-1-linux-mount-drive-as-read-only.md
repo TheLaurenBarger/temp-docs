@@ -7,7 +7,7 @@ Symptoms.
 
 The HDD connected to your Linux machine is mounted as a read-only file system.
 
-1.  Services interacting with the device will report read only file system errors, eg, Deluge logs:
+1. Services interacting with the device will report read only file system errors, eg, Deluge logs:
     
     ```java
     chown: changing ownership of '/downloads/complete/sonarr': Read-only file system
@@ -17,7 +17,7 @@ The HDD connected to your Linux machine is mounted as a read-only file system.
     chown: changing ownership of '/downloads/incomplete': Read-only file system
     chown: changing ownership of '/downloads': Read-only file system
     ```
-2.  Unmounting and remounting the drive returns the following error:
+2. Unmounting and remounting the drive returns the following error:
     
     ```java
     badger@nuc01:~$ sudo mount /dev/sdb1 /mnt/media/
@@ -42,11 +42,11 @@ How to fix.
 
 The fix is simple is thankfully simple. The drive just needs to be properly ejected from a Windows machine and then remounted on Linux:
 
-1.  Unmount the drive from your Linux OS
-2.  Connect the drive to a Windows machine.
-3.  If prompted, choose to repair the drive.
-4.  Properly eject the drive using the drawer icon.
-5.  Reconnect the drive to your Linux machine
+1. Unmount the drive from your Linux OS
+2. Connect the drive to a Windows machine.
+3. If prompted, choose to repair the drive.
+4. Properly eject the drive using the drawer icon.
+5. Reconnect the drive to your Linux machine
     
 
 Unmounting and remounting HDD on Linux.
@@ -155,13 +155,11 @@ Once you’ve confirmed the drive path (sdb/sdb1), mount the drive to the desire
 sudo mount /dev/sdb1 /mnt/media/
 ```
 
-Conclusion.
-===========
+## Conclusion
 
 There you have it! An interesting problem caused by the nuances of having different operating systems interacting with the same storage. Thankfully an easy fix as well!
 
-References.
-===========
+## References
 
 1. [https://www.tomshardware.com/how-to/mount-drives-linux](https://www.tomshardware.com/how-to/mount-drives-linux)
 2. [https://askubuntu.com/questions/1200201/external-hard-drive-set-to-read-only-on-ubuntu-18-04](https://askubuntu.com/questions/1200201/external-hard-drive-set-to-read-only-on-ubuntu-18-04)

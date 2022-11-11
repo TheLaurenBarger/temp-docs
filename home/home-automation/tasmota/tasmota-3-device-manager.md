@@ -1,23 +1,21 @@
+# Tasmota, Part 3: Device Manager
+
 introduction
 
 <!-- Table of Contents -->
 
-Heading 1.
-==========
+## Heading 1
 
 text
 
-An obligatory infographic.
-==========================
+## An obligatory infographic
 
 text
 
-Conclusion.
-===========
+## Conclusion
 
 text
 
-References.
-===========
+## References
 
 1. [https://github.com/jziolkowski/tdm/releases/tag/v0.2.11](https://github.com/jziolkowski/tdm/releases/tag/v0.2.11)
