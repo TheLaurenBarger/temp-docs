@@ -1,6 +1,6 @@
 # 3D Printing, Part 1: Octoprint Setup
 
-What better use for a Raspberry PI than turning the already epic 3D printer into yet another smart and remotely available device! Here follows the how to.
+What better use for a Raspberry PI than turning the already epic 3D printer into yet another smart and remotely available device! Here follows the how to.   
 
 {{< toc >}} 
 
