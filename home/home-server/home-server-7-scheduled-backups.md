@@ -1,28 +1,25 @@
+# Home Server, Part 7: Scheduled Backups
+
 I’ve played around with a few backup solutions for the home server and have settled on using GitHub. I’m used to the platform and Git and I think it makes the most sense to keep my versions up to date in the most lightweight way possible.
 
-<!-- Table of Contents -->
+{{< toc >}}
 
-Creating scheduled backups.
-===========================
+## Creating scheduled backups
 
 In order to create scheduled backups, we will require the following:
 
-*   A GitHub repository to store our backup and a local git repository for pushing our code
-    
-*   A gitignore file to manage the files we wish to backup.
-    
-*   A shell script with git commit/push commands.
-    
-*   A cron job to run the shell script at specific intervals.
-    
+* A GitHub repository to store our backup and a local git repository for pushing our code
+* A gitignore file to manage the files we wish to backup.
+* A shell script with git commit/push commands.
+* A cron job to run the shell script at specific intervals.
 
 The GitHub repository that we’ll be using is [https://github.com/TheLaurenBarger/home-server-backup](https://github.com/TheLaurenBarger/home-server-backup).
 
-### Creating a local git repository.
+### Creating a local git repository
 
 I’ve already got Git installed, so to create the repository, I simply ran the following commands:
 
-```java
+```bash
 git config --global user.email "lauren.barger@outlook.com"
 git config --global user.name "Badger"
 
@@ -31,15 +28,15 @@ git remote add origin https://github.com/TheLaurenBarger/home-server-backup.git
 git push --set-upstream origin master
 ```
 
-### Creating a .gitignore file.
+### Creating a .gitignore file
 
 The gitignore file you create will depend on your container setup and backup preferences. I chose to exclude specific container configurations from backing up since they wouldn’t be useful in a system restore or require too much space. I created my .gitignore file in the same directory as my docker-compose.yaml file. The .gitignore file I am using currently can be found here: [https://github.com/TheLaurenBarger/home-server-backup/blob/master/.gitignore](https://github.com/TheLaurenBarger/home-server-backup/blob/master/.gitignore)
 
-### Creating a git commit / push shell script.
+### Creating a git commit / push shell script
 
 I used a simple script which adds all the files in the /opt/ directory (my docker-compose environment) to the commit and creates a commit message in the format of “home-server-backup YYYY-MM-DD”. The script is stored in a file called backup.sh and reads as follows [https://github.com/TheLaurenBarger/home-server-backup/blob/master/backup.sh](https://github.com/TheLaurenBarger/home-server-backup/blob/master/backup.sh):
 
-```java
+```bash
 #!/bin/bash
 
 cd /opt/
@@ -49,7 +46,7 @@ git commit -m "home-server-backup $timestamp"
 git push origin master
 ```
 
-### Creating a cron job to run the backup script.
+### Creating a cron job to run the backup script
 
 I want this backup script to run every Sunday morning around 5am. To do this my cron expression would be `0 5 * * SUN`.
 
@@ -57,13 +54,13 @@ This is a fantastic tool for configuring cron entries: [https://crontab.guru](ht
 
 To create the cron entry, execute the following command:
 
-```java
+```bash
 sudo crontab -e
 ```
 
 and add the following entry after the file comments:
 
-```java
+```bash
 # Edit this file to introduce tasks to be run by cron.
 # 
 # Each task to run has to be defined through a single line
@@ -92,17 +89,11 @@ and add the following entry after the file comments:
 
 It is actually super important to put these commands in the sudo’s crontab. That way you won’t ever run into the permissions issues that your own user will have regarding updates and backups
 
-Conclusion.
-===========
+## Conclusion
 
 I now have a scheduled script which will backup my docker compose environment to GitHub every Sunday morning at 5am.
 
-**←** [Home Server, Part 7: Mikrotik Port Forwarding Secure Ports](4292609.html)
-
-[Home Server, Part 9: Scheduled Updates](17924097.html) →
-
-References.
-===========
+## References
 
 1. [https://crontab.guru](https://crontab.guru)
 2. [https://www.homeautomationguy.io/home-assistant-tips/keeping-your-home-assistant-container-up-to-date/](https://www.homeautomationguy.io/home-assistant-tips/keeping-your-home-assistant-container-up-to-date/)

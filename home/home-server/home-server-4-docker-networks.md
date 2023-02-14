@@ -1,37 +1,36 @@
+# Home Server, Part 4: Docker Networks
+
 At the moment, I’ve sort of thrown together my home server. I’ve found I’ve got a fairly standardised knowledge of Docker, containers and networking. But this wouldn’t be fun if I didn’t learn anything while setting up all these toys.
 
 It also turns out that Docker networks are extremely cool.
 
-<!-- Table of Contents -->
+{{< toc >}}
 
-Docker Networks
-===============
+## Docker Networks
 
 Docker has seven different network types and they’re as follows:
 
-1.  Default bridge.
-2.  User-defined bridge.
-3.  MACVLAN
-4.  IPVLAN (L2)
-5.  IPVLAN (L3)
-6.  Overlay
-7.  None
-    
+1. Default bridge.
+2. User-defined bridge.
+3. MACVLAN
+4. IPVLAN (L2)
+5. IPVLAN (L3)
+6. Overlay
+7. None
 
 By default, a fresh Docker installation will be created with a default bridge, host network (MACVLAN) and a none network.
 
 Using Docker Compose, the network setup will behave a little differently. In a Docker Compose setup, the directory that the docker-compose.yml is created in will create a network based on the name of that directory.
 
-Network 1: The default bridge.
-==============================
+## Network 1: The default bridge
 
 I’ve already done some toying with my Docker instance. So at the moment, I’ve already established an additional network on my Docker host.
 
-```java
+```bash
 sudo docker network ls
 ```
 
-```java
+```bash
 NETWORK ID     NAME          DRIVER    SCOPE
 f4aa7ea18b56   bridge        bridge    local
 b37f41df4666   host          host      local
@@ -43,18 +42,17 @@ As you can see, besides the three default networks that ship with Docker (bridge
 
 Network Driver here is equivalent to network type. There are seven!
 
-Default Container Networks.
----------------------------
+### Default Container Networks
 
 But what about containers? How do they fit into the mix? Let’s take a look at the current state of our docker host network.
 
-```java
+```bash
 ip add show
 ```
 
 **Defaults:**
 
-```java
+```bash
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
@@ -75,7 +73,7 @@ ip add show
 
 **Docker:**
 
-```java
+```bash
 4: br-3201469f0a8b: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
     link/ether 02:42:14:84:d9:08 brd ff:ff:ff:ff:ff:ff
     inet 172.18.0.1/16 brd 172.18.255.255 scope global br-3201469f0a8b
@@ -90,7 +88,7 @@ ip add show
 
 **Containers:**
 
-```java
+```bash
 35: vethd19a6be@if34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-3201469f0a8b state UP group default 
     link/ether 66:5d:2c:a2:b2:91 brd ff:ff:ff:ff:ff:ff link-netnsid 0
     inet6 fe80::645d:2cff:fea2:b291/64 scope link 
@@ -141,11 +139,11 @@ That’s… a lot of connections.
 
 For each container added, Docker will spin up a virtual ethernet connection for each of them and automatically connect them to the bridge they belong to. Running the following command will display the list of virtual ethernet interfaces (ie, container interfaces) and the bridge network they are connected to.
 
-```java
+```bash
 bridge link
 ```
 
-```java
+```bash
 35: vethd19a6be@if34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br-3201469f0a8b state forwarding priority 32 cost 2 
 37: vetha60f0a8@if36: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br-3201469f0a8b state forwarding priority 32 cost 2 
 39: veth7e8dabe@if38: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br-3201469f0a8b state forwarding priority 32 cost 2 
@@ -161,25 +159,23 @@ bridge link
 
 Typically, the default bridge that Docker will connect these virtual ethernet connections to will be docker0. However, looks like I’ve overridden my default network bridge with the opt\_docker bridge which has all my containers connected to it.
 
-An obligatory infographic.
---------------------------
+### An obligatory infographic
 
 Our Docker host has been configured with a bridge network. For each container added to the host, Docker creates a virtual ethernet interface and connects it to a bridge network. The virtual ethernet interface is then mapped to the eth0 port of each of the docker containers.
 
-![](attachments/1212448/1015858.png)
+![Docker Networks Infographic](./home-server-4-docker-networks/1015858.png)
 
-Docker network DHCP and DNS.
-----------------------------
+### Docker network DHCP and DNS
 
 Now, not only did the Docker bridge set up virtual ethernet interfaces, but it also created IP addresses for each of the containers. Which means our bridge is also hosting DHCP and DNS functionality.
 
 Let’s take a look at the bridge that’s in use most in my setup, opt\_default:
 
-```java
+```bash
 docker inspect opt_default
 ```
 
-```java
+```json
 [
     {
         "Name": "opt_default",
@@ -300,13 +296,13 @@ This network also has DNS so that it can communicate with all containers and all
 
 We can test this out. Let’s jump into the shell of one of the available Docker containers, and try and ping another container.
 
-```java
+```bash
 docker exec -it podgrab sh
 ```
 
 We’ve now logged into the podgrab container. As you can see, this container only has it’s eth0 network interface exposed which is the connection currently hosted by a virtual ethernet interface on the network bridge.
 
-```java
+```bash
 /api # ip add
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -320,7 +316,7 @@ We’ve now logged into the podgrab container. As you can see, this container on
 
 From the podgrab container, we can freely ping the deluge container:
 
-```java
+```bash
 /api # ping 172.18.0.3
 PING 172.18.0.3 (172.18.0.3): 56 data bytes
 64 bytes from 172.18.0.3: seq=0 ttl=64 time=0.246 ms
@@ -334,19 +330,12 @@ PING 172.18.0.3 (172.18.0.3): 56 data bytes
 round-trip min/avg/max = 0.245/0.249/0.254 ms 
 ```
 
-Network 2: User-defined bridge.
-===============================
+## Network 2: User-defined bridge
 
-Conclusion
-==========
+## Conclusion
 
 asdf
 
-**←** [Home Server, Part 3: Docker](1900552.html)
-
-[Home Server, Part 5: Remote Access (Cloudflare and NGINX Proxy Manager)](327719.html) **→**
-
-References
-==========
+## References
 
 1. [https://docs.docker.com/compose/networking/](https://docs.docker.com/compose/networking/)

@@ -2,7 +2,7 @@
 
 The value of a dedicated home server is unimaginable. My little NUC has paid off for itself in usefulness and sheer joy a hundred times over and I’ve had it for six months. This article is the first of many to chronicle the complete setup process for my home server, starting with, the hardware.
 
-<!-- Table of Contents -->
+{{< toc >}}
 
 ## Hardware
 

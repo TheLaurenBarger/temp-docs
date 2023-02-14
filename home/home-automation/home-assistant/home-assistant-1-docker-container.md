@@ -8,7 +8,7 @@ Welcome to the first of many Home Assistant oriented docs. In this article, weâ€
 > * [Home Server, Part 2: Ubuntu OS](14024705.html)
 > * [Home Server, Part 3: Docker](1900552.html)
 
-<!-- Table of Contents -->
+{{< toc >}}
 
 ## Heading 1
 

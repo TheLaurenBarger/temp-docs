@@ -1,6 +1,6 @@
 Now that our home server is accessible via our CloudFlare domain address, we need to address the issue of dynamic external IP addresses configured for our Router.
 
-<!-- Table of Contents -->
+{{< toc >}}
 
 Dynamic External IP addresses.
 ==============================
@@ -32,7 +32,7 @@ Add the following image to your docker-compose.yaml.
 
 Then run the following to bring up the DD Client container:
 
-```java
+```bash
 docker-compose up -d
 ```
 
@@ -41,11 +41,9 @@ DD Client configuration.
 
 The DD Client needs to be configured to update the external IP address of the CloudFlare DNS entries. In order to connect to CloudFlare and perform updates, we will need the following:
 
-*   domain name (eg. badger-quest.com)
-    
-*   email username
-    
-*   API global token
+* domain name (eg. badger-quest.com)
+* email username
+* API global token
     
 
 To retrieve your CloudFlare global API token, navigate to My Profile → API Tokens. Then select View next to your Global API Key:
@@ -96,8 +94,7 @@ If you had enabled verbose logging, you should see entries in the container logs
 
 If you navigate to your domain DNS entries on CloudFlare, you should see that the IP address for the DNS entries has been updated to the value of your external IP address.
 
-Conclusion.
-===========
+## Conclusion
 
 My CloudFlare domain is now ensured to always be up to date with the latest dynamic IP assigned to my local router.
 

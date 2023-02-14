@@ -1,23 +1,21 @@
+# Home Assistant, Part X: MQTT Broker
+
 introduction
 
-<!-- Table of Contents -->
+{{< toc >}}
 
-Heading 1.
-==========
-
-text
-
-An obligatory infographic.
-==========================
+## Heading 1
 
 text
 
-Conclusion.
-===========
+## An obligatory infographic
 
 text
 
-References.
-===========
+## Conclusion
+
+text
+
+## References
 
 1. [https://tasmota.github.io/docs/Home-Assistant/](https://tasmota.github.io/docs/Home-Assistant/)

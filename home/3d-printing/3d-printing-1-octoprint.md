@@ -2,7 +2,7 @@
 
 What better use for a Raspberry PI than turning the already epic 3D printer into yet another smart and remotely available device! Here follows the how to.
 
-<!-- Table of Contents -->
+{{< toc >}}
 
 ## Flash OctoPrint onto an SD Card
 
@@ -16,7 +16,7 @@ Once you’ve finished the flash and connection, set up the printer configuratio
 
 [https://help.prusa3d.com/article/octoprint-configuration-and-install\_2182#launching-and-configuring-octoprint](https://help.prusa3d.com/article/octoprint-configuration-and-install_2182#launching-and-configuring-octoprint)
 
-| **Setting**         | **Prusa Mini Configuration** |
+| **Setting**       | **Prusa Mini Configuration** |
 |---------------------|------------------------------|
 | Form Factor         | Rectangular                  |
 | Origin              | Lower left                   |
