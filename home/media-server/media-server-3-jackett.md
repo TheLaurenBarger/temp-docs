@@ -8,7 +8,7 @@ The next connected segment of our media server is Jackett. Jackett will serve to
 > * [Home Server, Part 2: Ubuntu OS](14024705.html)
 > * [Home Server, Part 3: Docker](1900552.html)
 
-{{< toc >}}
+<!-- Table of Contents -->
 
 ## Jackett Docker container
 

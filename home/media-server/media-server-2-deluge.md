@@ -2,15 +2,18 @@
 
 The first piece of the media server that we will configure is a torrent client. For this build, I’ll be using Deluge. There are many torrent client options available and each have their pros and cons, but we’re using Deluge for this build. Deluge is also going to allow us to set things like active downloading hours and download options specific to the source of the downloading request.
 
-> This section assumes the following has been completed:
->
-> * [Home Server, Part 1: Hardware](2031617.html)
-> * [Home Server, Part 2: Ubuntu OS](14024705.html)
-> * [Home Server, Part 3: Docker](1900552.html)
+This section assumes the following has been completed:
 
-{{< toc >}}
+[Home Server, Part 1: Hardware](2031617.html)
 
-## Deluge Docker container
+[Home Server, Part 2: Ubuntu OS](14024705.html)
+
+[Home Server, Part 3: Docker](1900552.html)
+
+<!-- Table of Contents -->
+
+Deluge Docker container.
+========================
 
 Add the following container details to your docker-compose.yaml [https://hub.docker.com/r/linuxserver/deluge](https://hub.docker.com/r/linuxserver/deluge):
 

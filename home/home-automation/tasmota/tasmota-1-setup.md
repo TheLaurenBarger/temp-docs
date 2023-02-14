@@ -6,9 +6,15 @@ Tasmota is open source firmware designed for the ESP wifi chip series in order t
 >
 > * [home-assistant](/wiki/label/home-assistant)
 > * [mqtt](/wiki/label/mqtt)
+<<<<<<< HEAD
 
 {{< toc >}}
 
+=======
+
+<!-- Table of Contents -->
+
+>>>>>>> b3a8580de101a250de03d8c59337b640d73bf8c9
 ## Flashing Tasmota
 
 Let’s take a look at what’s required for flashing Tasmota onto an ESP device.

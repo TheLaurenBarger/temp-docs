@@ -2,15 +2,18 @@
 
 Before we dig into the how-to, let’s take a look at where we’re heading.
 
-> This section assumes the following has been completed:
->
-> * [Home Server, Part 1: Hardware](2031617.html)
-> * [Home Server, Part 2: Ubuntu OS](14024705.html)
-> * [Home Server, Part 3: Docker](1900552.html)
+This section assumes the following has been completed:
 
-{{< toc >}}
+[Home Server, Part 1: Hardware](2031617.html)
 
-## Home media server structure
+[Home Server, Part 2: Ubuntu OS](14024705.html)
+
+[Home Server, Part 3: Docker](1900552.html)
+
+<!-- Table of Contents -->
+
+Home media server structure.
+============================
 
 In order of installation, the components of the media server setup that we will cover the installation and configuration for is as follows:
 

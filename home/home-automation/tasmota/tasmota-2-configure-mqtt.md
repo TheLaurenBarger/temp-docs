@@ -6,7 +6,11 @@ In this article, we’ll cover how to configure a Tasmota device for MQTT integr
 >
 >* [MQTT Configuration](MQTT-Configuration_6946817.html)
 
+<<<<<<< HEAD
 {{< toc >}}
+=======
+<!-- Table of Contents -->
+>>>>>>> b3a8580de101a250de03d8c59337b640d73bf8c9
 
 ## MQTT configuration
 
