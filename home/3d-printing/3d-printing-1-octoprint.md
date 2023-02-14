@@ -2,7 +2,7 @@
 
 What better use for a Raspberry PI than turning the already epic 3D printer into yet another smart and remotely available device! Here follows the how to.
 
-{{< toc >}}
+{{< toc >}} 
 
 ## Flash OctoPrint onto an SD Card
 
